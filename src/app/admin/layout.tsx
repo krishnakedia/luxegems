@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { AdminSidebar } from "@/components/admin/sidebar";
+import { AdminHeader } from "@/components/admin/header";
+import { AdminFooter } from "@/components/admin/footer";
 
 export const metadata: Metadata = {
   title: {
@@ -20,9 +22,13 @@ export default function AdminLayout({
   return (
     <div className="min-h-screen bg-stone-100">
       <AdminSidebar />
-      <main className="lg:ml-72 min-h-screen">
-        {children}
-      </main>
+      <div className="lg:ml-72 min-h-screen flex flex-col">
+        <AdminHeader />
+        <main className="flex-1">
+          {children}
+        </main>
+        <AdminFooter />
+      </div>
     </div>
   );
 }

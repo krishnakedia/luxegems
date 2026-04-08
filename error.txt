@@ -1,10 +1,6 @@
-wishlist,track-order,shipping,returns,FAQs,blog, not found
- add to cart not working
-collection pages are not working
-hero section is missing in many pages like Privacy Policy,Terms & Conditions,Refund Policy
-there is no login in admin,
-many pages are missing in admin,
-seo should be added with product and pages not seperatly.
-database is not connect with db
-where ever customer order instead of going to payment page it should open whatsapp and send order details with address in pdf format.
-note pdf formate should be like a invition style where beacutiful design of invtation with invoice details like customer details, address, and product details
+add to cart or wihlist is not working, 
+blog details is not working
+backend is not working 
+there should be admin login first and after auth user can access admin.
+user header and footer should not be in admin.
+there is not backend interaction between db and backend

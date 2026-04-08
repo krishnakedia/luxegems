@@ -98,14 +98,30 @@ export default function AdminOrdersPage() {
   const [orders] = useState(mockOrders);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
+  const [payment, setPayment] = useState("all");
+  const [type, setType] = useState("all");
 
   const filteredOrders = orders.filter((order) => {
     const matchesSearch =
       order.order_uid.toLowerCase().includes(search.toLowerCase()) ||
       order.customer_name.toLowerCase().includes(search.toLowerCase()) ||
       order.customer_phone.includes(search);
-    const matchesStatus = status === "all" || order.order_status === status;
-    return matchesSearch && matchesStatus;
+    
+    let matchesStatus = true;
+    if (status !== "all") {
+      const statusMap: Record<string, string> = {
+        pending: "1",
+        processing: "2",
+        shipped: "3",
+        delivered: "4",
+      };
+      matchesStatus = order.order_status === statusMap[status];
+    }
+    
+    const matchesPayment = payment === "all" || order.order_payment === payment;
+    const matchesType = type === "all" || order.order_type === type;
+    
+    return matchesSearch && matchesStatus && matchesPayment && matchesType;
   });
 
   const statusCounts = {
@@ -165,6 +181,8 @@ export default function AdminOrdersPage() {
             />
           </div>
           <Select
+            value={payment}
+            onChange={(e) => setPayment(e.target.value)}
             options={[
               { value: "all", label: "All Payment" },
               { value: "paid", label: "Paid" },
@@ -173,6 +191,8 @@ export default function AdminOrdersPage() {
             className="w-40"
           />
           <Select
+            value={type}
+            onChange={(e) => setType(e.target.value)}
             options={[
               { value: "all", label: "All Type" },
               { value: "online", label: "Online" },
