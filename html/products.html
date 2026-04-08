@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop All Products | LUXEGEMS - Premium Jewelry</title>
+    <meta name="description" content="Browse our collection of premium jewelry. Find necklaces, earrings, rings, bracelets and more.">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'serif': ['Playfair Display', 'serif'],
+                        'sans': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white text-stone-900 antialiased">
+    <!-- Navigation -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-stone-200">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-20">
+                <a href="index.html" class="flex items-center gap-2">
+                    <svg class="h-8 w-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3l14 9-14 9V3z"></path>
+                    </svg>
+                    <div>
+                        <span class="text-2xl font-light tracking-widest text-stone-900">LUXE</span>
+                        <span class="text-2xl font-extralight tracking-widest text-amber-600">GEMS</span>
+                    </div>
+                </a>
+                <nav class="hidden lg:flex items-center gap-8">
+                    <a href="index.html" class="text-sm font-medium tracking-wide text-stone-700 hover:text-amber-700">Home</a>
+                    <a href="products.html" class="text-sm font-medium tracking-wide text-amber-700">Shop</a>
+                    <a href="about.html" class="text-sm font-medium tracking-wide text-stone-700 hover:text-amber-700">About</a>
+                    <a href="contact.html" class="text-sm font-medium tracking-wide text-stone-700 hover:text-amber-700">Contact</a>
+                </nav>
+                <div class="flex items-center gap-2">
+                    <button class="p-2.5 text-stone-700 hover:text-amber-700">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                    <a href="wishlist.html" class="p-2.5 text-stone-700 hover:text-amber-700 relative">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                        <span class="absolute -top-0.5 -right-0.5 h-4 w-4 bg-amber-600 text-white text-[10px] flex items-center justify-center rounded-full">0</span>
+                    </a>
+                    <a href="cart.html" class="p-2.5 text-stone-700 hover:text-amber-700 relative">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                        <span class="absolute -top-0.5 -right-0.5 h-4 w-4 bg-amber-600 text-white text-[10px] flex items-center justify-center rounded-full">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1">
+        <!-- Header -->
+        <div class="bg-stone-100 py-12">
+            <div class="container mx-auto px-4">
+                <h1 class="text-4xl font-light text-stone-900 mb-2">Our Collection</h1>
+                <p class="text-stone-500">Discover 56 beautiful pieces</p>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4 py-8">
+            <!-- Toolbar -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-8 pb-8 border-b border-stone-200">
+                <div class="flex items-center gap-4">
+                    <button class="inline-flex items-center justify-center gap-2 border-2 border-stone-300 bg-transparent px-4 py-2 text-sm font-medium text-stone-700 hover:border-amber-600 hover:text-amber-700 transition-colors">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                        </svg>
+                        Filters
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <select class="h-11 border-2 border-stone-200 bg-white px-4 py-2 text-sm text-stone-900 focus:border-amber-600 focus:outline-none">
+                        <option>Featured</option>
+                        <option>Newest First</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                        <option>Name: A-Z</option>
+                    </select>
+
+                    <div class="flex items-center border border-stone-200">
+                        <button class="p-2.5 bg-stone-900 text-white">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                            </svg>
+                        </button>
+                        <button class="p-2.5 text-stone-600 hover:bg-stone-100">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Sidebar Filters -->
+                <aside class="w-full lg:w-64 flex-shrink-0">
+                    <div class="sticky top-24 space-y-8">
+                        <!-- Categories -->
+                        <div>
+                            <h3 class="font-medium text-stone-900 mb-4">Categories</h3>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" class="w-4 h-4 border-stone-300 text-amber-600 focus:ring-amber-500">
+                                    <span class="text-sm text-stone-600 group-hover:text-stone-900">Necklaces (24)</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" class="w-4 h-4 border-stone-300 text-amber-600 focus:ring-amber-500">
+                                    <span class="text-sm text-stone-600 group-hover:text-stone-900">Earrings (18)</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" class="w-4 h-4 border-stone-300 text-amber-600 focus:ring-amber-500">
+                                    <span class="text-sm text-stone-600 group-hover:text-stone-900">Rings (12)</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" class="w-4 h-4 border-stone-300 text-amber-600 focus:ring-amber-500">
+                                    <span class="text-sm text-stone-600 group-hover:text-stone-900">Bracelets (15)</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" class="w-4 h-4 border-stone-300 text-amber-600 focus:ring-amber-500">
+                                    <span class="text-sm text-stone-600 group-hover:text-stone-900">Baptismal (8)</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" class="w-4 h-4 border-stone-300 text-amber-600 focus:ring-amber-500">
+                                    <span class="text-sm text-stone-600 group-hover:text-stone-900">Altar Sets (10)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Price Range -->
+                        <div>
+                            <h3 class="font-medium text-stone-900 mb-4">Price Range</h3>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="radio" name="price" class="w-4 h-4 border-stone-300 text-amber-600 focus:ring-amber-500">
+                                    <span class="text-sm text-stone-600 group-hover:text-stone-900">Under ₹500</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="radio" name="price" class="w-4 h-4 border-stone-300 text-amber-600 focus:ring-amber-500">
+                                    <span class="text-sm text-stone-600 group-hover:text-stone-900">₹500 - ₹1,000</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="radio" name="price" class="w-4 h-4 border-stone-300 text-amber-600 focus:ring-amber-500">
+                                    <span class="text-sm text-stone-600 group-hover:text-stone-900">₹1,000 - ₹2,500</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="radio" name="price" class="w-4 h-4 border-stone-300 text-amber-600 focus:ring-amber-500">
+                                    <span class="text-sm text-stone-600 group-hover:text-stone-900">₹2,500 - ₹5,000</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="radio" name="price" class="w-4 h-4 border-stone-300 text-amber-600 focus:ring-amber-500">
+                                    <span class="text-sm text-stone-600 group-hover:text-stone-900">Above ₹5,000</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Availability -->
+                        <div>
+                            <h3 class="font-medium text-stone-900 mb-4">Availability</h3>
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="checkbox" class="w-4 h-4 border-stone-300 text-amber-600 focus:ring-amber-500">
+                                <span class="text-sm text-stone-600 group-hover:text-stone-900">In Stock Only</span>
+                            </label>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Products Grid -->
+                <div class="flex-1">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Product 1 -->
+                        <div class="group bg-white border border-stone-200 overflow-hidden transition-all duration-500 hover:border-amber-200 hover:shadow-xl hover:shadow-amber-100/50">
+                            <div class="relative aspect-square overflow-hidden bg-stone-50">
+                                <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600" alt="Gold Necklace" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                    <span class="inline-flex items-center bg-gradient-to-r from-rose-500 to-pink-500 text-white px-3 py-1 text-xs font-medium">15% OFF</span>
+                                </div>
+                                <button class="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all">
+                                    <svg class="h-5 w-5 text-stone-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                    </svg>
+                                </button>
+                                <div class="absolute bottom-4 left-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                                    <a href="product-detail.html" class="flex-1 bg-gradient-to-r from-amber-700 to-yellow-600 text-white text-center py-2.5 text-sm font-medium">Add to Cart</a>
+                                    <a href="product-detail.html" class="bg-white border-2 border-stone-200 px-4 py-2.5 hover:border-amber-600">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <p class="text-xs text-stone-500 uppercase tracking-wider mb-1">Necklaces</p>
+                                <h3 class="text-base font-medium text-stone-900 mb-3 group-hover:text-amber-700 transition-colors line-clamp-2">Gold-Plated Necklace Set</h3>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg font-semibold text-stone-900">₹1,256</span>
+                                    <span class="text-sm text-stone-400 line-through">₹1,500</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product 2 -->
+                        <div class="group bg-white border border-stone-200 overflow-hidden transition-all duration-500 hover:border-amber-200 hover:shadow-xl hover:shadow-amber-100/50">
+                            <div class="relative aspect-square overflow-hidden bg-stone-50">
+                                <img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600" alt="Earrings" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <button class="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all">
+                                    <svg class="h-5 w-5 text-stone-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                    </svg>
+                                </button>
+                                <div class="absolute bottom-4 left-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                                    <a href="product-detail.html" class="flex-1 bg-gradient-to-r from-amber-700 to-yellow-600 text-white text-center py-2.5 text-sm font-medium">Add to Cart</a>
+                                    <a href="product-detail.html" class="bg-white border-2 border-stone-200 px-4 py-2.5 hover:border-amber-600">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <p class="text-xs text-stone-500 uppercase tracking-wider mb-1">Earrings</p>
+                                <h3 class="text-base font-medium text-stone-900 mb-3 group-hover:text-amber-700 transition-colors line-clamp-2">Diamond Stud Earrings</h3>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg font-semibold text-stone-900">₹2,850</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product 3 -->
+                        <div class="group bg-white border border-stone-200 overflow-hidden transition-all duration-500 hover:border-amber-200 hover:shadow-xl hover:shadow-amber-100/50">
+                            <div class="relative aspect-square overflow-hidden bg-stone-50">
+                                <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600" alt="Ring" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                    <span class="inline-flex items-center bg-stone-900 text-white px-3 py-1 text-xs font-medium uppercase">New</span>
+                                </div>
+                                <button class="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all">
+                                    <svg class="h-5 w-5 text-stone-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                    </svg>
+                                </button>
+                                <div class="absolute bottom-4 left-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                                    <a href="product-detail.html" class="flex-1 bg-gradient-to-r from-amber-700 to-yellow-600 text-white text-center py-2.5 text-sm font-medium">Add to Cart</a>
+                                    <a href="product-detail.html" class="bg-white border-2 border-stone-200 px-4 py-2.5 hover:border-amber-600">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <p class="text-xs text-stone-500 uppercase tracking-wider mb-1">Rings</p>
+                                <h3 class="text-base font-medium text-stone-900 mb-3 group-hover:text-amber-700 transition-colors line-clamp-2">Pearl Engagement Ring</h3>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg font-semibold text-stone-900">₹3,999</span>
+                                    <span class="text-sm text-stone-400 line-through">₹4,500</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product 4 -->
+                        <div class="group bg-white border border-stone-200 overflow-hidden transition-all duration-500 hover:border-amber-200 hover:shadow-xl hover:shadow-amber-100/50">
+                            <div class="relative aspect-square overflow-hidden bg-stone-50">
+                                <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600" alt="Bracelet" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <button class="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all">
+                                    <svg class="h-5 w-5 text-stone-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                    </svg>
+                                </button>
+                                <div class="absolute bottom-4 left-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                                    <a href="product-detail.html" class="flex-1 bg-gradient-to-r from-amber-700 to-yellow-600 text-white text-center py-2.5 text-sm font-medium">Add to Cart</a>
+                                    <a href="product-detail.html" class="bg-white border-2 border-stone-200 px-4 py-2.5 hover:border-amber-600">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <p class="text-xs text-stone-500 uppercase tracking-wider mb-1">Bracelets</p>
+                                <h3 class="text-base font-medium text-stone-900 mb-3 group-hover:text-amber-700 transition-colors line-clamp-2">Gold Chain Bracelet</h3>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg font-semibold text-stone-900">₹1,890</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product 5 -->
+                        <div class="group bg-white border border-stone-200 overflow-hidden transition-all duration-500 hover:border-amber-200 hover:shadow-xl hover:shadow-amber-100/50">
+                            <div class="relative aspect-square overflow-hidden bg-stone-50">
+                                <img src="https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=600" alt="Altar Set" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <button class="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all">
+                                    <svg class="h-5 w-5 text-stone-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                    </svg>
+                                </button>
+                                <div class="absolute bottom-4 left-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                                    <a href="product-detail.html" class="flex-1 bg-gradient-to-r from-amber-700 to-yellow-600 text-white text-center py-2.5 text-sm font-medium">Add to Cart</a>
+                                    <a href="product-detail.html" class="bg-white border-2 border-stone-200 px-4 py-2.5 hover:border-amber-600">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <p class="text-xs text-stone-500 uppercase tracking-wider mb-1">Altar Sets</p>
+                                <h3 class="text-base font-medium text-stone-900 mb-3 group-hover:text-amber-700 transition-colors line-clamp-2">Traditional Silver Altar Set</h3>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg font-semibold text-stone-900">₹4,500</span>
+                                    <span class="text-sm text-stone-400 line-through">₹5,000</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product 6 -->
+                        <div class="group bg-white border border-stone-200 overflow-hidden transition-all duration-500 hover:border-amber-200 hover:shadow-xl hover:shadow-amber-100/50">
+                            <div class="relative aspect-square overflow-hidden bg-stone-50">
+                                <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600" alt="Communion Set" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                <button class="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all">
+                                    <svg class="h-5 w-5 text-stone-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                    </svg>
+                                </button>
+                                <div class="absolute bottom-4 left-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                                    <a href="product-detail.html" class="flex-1 bg-gradient-to-r from-amber-700 to-yellow-600 text-white text-center py-2.5 text-sm font-medium">Add to Cart</a>
+                                    <a href="product-detail.html" class="bg-white border-2 border-stone-200 px-4 py-2.5 hover:border-amber-600">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <p class="text-xs text-stone-500 uppercase tracking-wider mb-1">Communion</p>
+                                <h3 class="text-base font-medium text-stone-900 mb-3 group-hover:text-amber-700 transition-colors line-clamp-2">First Communion Set</h3>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-lg font-semibold text-stone-900">₹8,550</span>
+                                    <span class="text-sm text-stone-400 line-through">₹9,000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-center gap-2 mt-12">
+                        <button class="px-4 py-2 border border-stone-200 text-stone-600 hover:border-amber-600 hover:text-amber-700 disabled:opacity-50" disabled>Previous</button>
+                        <button class="px-4 py-2 bg-stone-900 text-white">1</button>
+                        <button class="px-4 py-2 border border-stone-200 text-stone-600 hover:border-amber-600 hover:text-amber-700">2</button>
+                        <button class="px-4 py-2 border border-stone-200 text-stone-600 hover:border-amber-600 hover:text-amber-700">3</button>
+                        <span class="px-2 text-stone-400">...</span>
+                        <button class="px-4 py-2 border border-stone-200 text-stone-600 hover:border-amber-600 hover:text-amber-700">10</button>
+                        <button class="px-4 py-2 border border-stone-200 text-stone-600 hover:border-amber-600 hover:text-amber-700">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-stone-900 text-stone-300">
+        <div class="container mx-auto px-4 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12">
+                <div class="lg:col-span-2">
+                    <a href="index.html" class="flex items-center gap-2 mb-6">
+                        <svg class="h-8 w-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3l14 9-14 9V3z"></path>
+                        </svg>
+                        <div>
+                            <span class="text-2xl font-light tracking-widest text-white">LUXE</span>
+                            <span class="text-2xl font-extralight tracking-widest text-amber-500">GEMS</span>
+                        </div>
+                    </a>
+                    <p class="text-stone-400 text-sm leading-relaxed mb-6">
+                        Discover exquisite jewelry crafted with passion and precision.
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <a href="#" class="px-3 py-2 bg-stone-800 hover:bg-amber-600 transition-colors text-xs font-medium">FB</a>
+                        <a href="#" class="px-3 py-2 bg-stone-800 hover:bg-amber-600 transition-colors text-xs font-medium">X</a>
+                        <a href="#" class="px-3 py-2 bg-stone-800 hover:bg-amber-600 transition-colors text-xs font-medium">IG</a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-white font-medium mb-4 tracking-wide">Shop</h3>
+                    <ul class="space-y-3">
+                        <li><a href="products.html" class="text-sm text-stone-400 hover:text-amber-500 transition-colors">All Products</a></li>
+                        <li><a href="products.html" class="text-sm text-stone-400 hover:text-amber-500 transition-colors">Necklaces</a></li>
+                        <li><a href="products.html" class="text-sm text-stone-400 hover:text-amber-500 transition-colors">Earrings</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-medium mb-4 tracking-wide">Company</h3>
+                    <ul class="space-y-3">
+                        <li><a href="about.html" class="text-sm text-stone-400 hover:text-amber-500 transition-colors">About Us</a></li>
+                        <li><a href="contact.html" class="text-sm text-stone-400 hover:text-amber-500 transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-medium mb-4 tracking-wide">Support</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-sm text-stone-400 hover:text-amber-500 transition-colors">FAQs</a></li>
+                        <li><a href="#" class="text-sm text-stone-400 hover:text-amber-500 transition-colors">Shipping</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-medium mb-4 tracking-wide">Contact</h3>
+                    <ul class="space-y-3">
+                        <li class="text-sm text-stone-400">+91 98765 43210</li>
+                        <li class="text-sm text-stone-400">support@luxegems.in</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-stone-800">
+            <div class="container mx-auto px-4 py-6">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p class="text-sm text-stone-500">© 2026 LUXEGEMS. All rights reserved.</p>
+                    <div class="flex items-center gap-6">
+                        <a href="privacy-policy.html" class="text-sm text-stone-500 hover:text-amber-500">Privacy Policy</a>
+                        <a href="terms-conditions.html" class="text-sm text-stone-500 hover:text-amber-500">Terms</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
