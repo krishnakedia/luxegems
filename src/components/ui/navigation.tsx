@@ -17,26 +17,22 @@ import {
 import { Button } from "./button";
 import { Badge } from "./badge";
 
-const categories = [
-  { name: "Necklaces", href: "/products?category=necklaces" },
-  { name: "Earrings", href: "/products?category=earrings" },
-  { name: "Rings", href: "/products?category=rings" },
-  { name: "Bracelets", href: "/products?category=bracelets" },
-  { name: "Bangles", href: "/products?category=bangles" },
-  { name: "Pendants", href: "/products?category=pendants" },
-  { name: "Mangalsutra", href: "/products?category=mangalsutra" },
-  { name: "Baptismal", href: "/products?category=baptismal" },
-  { name: "Altar Sets", href: "/products?category=altar-sets" },
-  { name: "Communion", href: "/products?category=communion" },
-  { name: "Censors", href: "/products?category=censors" },
-  { name: "Candlesticks", href: "/products?category=candlesticks" },
-];
-
 interface NavItem {
   label: string;
   href: string;
   children?: { label: string; href: string; description?: string }[];
 }
+
+const staticCategories = [
+  { name: "Necklaces", href: "/products?category=necklaces" },
+  { name: "Earrings", href: "/products?category=earrings" },
+  { name: "Rings", href: "/products?category=rings" },
+  { name: "Bracelets", href: "/products?category=bracelets" },
+  { name: "Baptismal", href: "/products?category=baptismal" },
+  { name: "Altar Sets", href: "/products?category=altar-sets" },
+  { name: "Communion", href: "/products?category=communion" },
+  { name: "Censors", href: "/products?category=censors" },
+];
 
 const navItems: NavItem[] = [
   {
@@ -46,7 +42,6 @@ const navItems: NavItem[] = [
   {
     label: "Shop",
     href: "/products",
-    children: categories.map((cat) => ({ label: cat.name, href: cat.href })),
   },
   {
     label: "Collections",
@@ -79,7 +74,37 @@ const navItems: NavItem[] = [
 export function Navigation() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [activeDropdown, setActiveDropdown] = React.useState<string | null>(null);
+  const [categories, setCategories] = React.useState(staticCategories);
   const pathname = usePathname();
+
+  React.useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await fetch("/api/categories");
+        const data = await res.json();
+        if (data.success && data.data?.length > 0) {
+          const cats = data.data.slice(0, 8).map((c: any) => ({
+            name: c.cat_name,
+            href: `/products?category=${c.cat_name.toLowerCase()}`
+          }));
+          setCategories(cats);
+        }
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+      }
+    }
+    fetchCategories();
+  }, []);
+
+  const shopNavItem: NavItem = {
+    label: "Shop",
+    href: "/products",
+    children: categories.map((cat) => ({ label: cat.name, href: cat.href })),
+  };
+
+  const updatedNavItems = navItems.map(item => 
+    item.label === "Shop" ? shopNavItem : item
+  );
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-stone-200">
@@ -102,7 +127,7 @@ export function Navigation() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8">
-            {navItems.map((item) => (
+            {updatedNavItems.map((item) => (
               <div
                 key={item.label}
                 className="relative"
@@ -182,7 +207,7 @@ export function Navigation() {
         {isOpen && (
           <div className="lg:hidden border-t border-stone-200 py-6">
             <nav className="flex flex-col gap-2">
-              {navItems.map((item) => (
+              {updatedNavItems.map((item) => (
                 <div key={item.label}>
                   <Link
                     href={item.href}

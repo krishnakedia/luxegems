@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -20,88 +20,40 @@ import { Input, Select } from "@/components/ui/input";
 import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/types";
 
-// Mock data
-const mockProducts: Product[] = [
-  {
-    p_id: 1,
-    p_slid: "Admin",
-    p_catid: "82",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Elegant Gold-Plated Necklace Set",
-    p_code: "SH-1001",
-    p_price: "1256",
-    p_discount: "10",
-    p_weight: 0,
-    p_description: "",
-    p_date: "2026-02-05",
-    p_status: 1,
-    category_name: "Necklaces",
-    stock: 15,
-    images: [{ pm_id: 1, pm_pid: "1", pm_image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=100", pm_status: "1" }],
-  },
-  {
-    p_id: 2,
-    p_slid: "Admin",
-    p_catid: "83",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Traditional Silver Altar Set",
-    p_code: "AS-1001",
-    p_price: "5000",
-    p_discount: "10",
-    p_weight: 0,
-    p_description: "",
-    p_date: "2026-02-05",
-    p_status: 1,
-    category_name: "Altar Sets",
-    stock: 8,
-    images: [{ pm_id: 2, pm_pid: "2", pm_image: "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=100", pm_status: "1" }],
-  },
-  {
-    p_id: 3,
-    p_slid: "Admin",
-    p_catid: "85",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Brass Censor with Chain",
-    p_code: "CE-100",
-    p_price: "6500",
-    p_discount: "8",
-    p_weight: 0,
-    p_description: "",
-    p_date: "2026-02-05",
-    p_status: 1,
-    category_name: "Censors",
-    stock: 5,
-    images: [{ pm_id: 3, pm_pid: "3", pm_image: "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=100", pm_status: "1" }],
-  },
-  {
-    p_id: 4,
-    p_slid: "Admin",
-    p_catid: "86",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Crystal Candlesticks Pair",
-    p_code: "CA-1001",
-    p_price: "7000",
-    p_discount: "15",
-    p_weight: 0,
-    p_description: "",
-    p_date: "2026-02-06",
-    p_status: 0,
-    category_name: "Candlesticks",
-    stock: 0,
-    images: [{ pm_id: 4, pm_pid: "4", pm_image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=100", pm_status: "1" }],
-  },
-];
-
 export default function AdminProductsPage() {
-  const [products] = useState<Product[]>(mockProducts);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [status, setStatus] = useState("all");
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [productsRes, categoriesRes] = await Promise.all([
+          fetch("/api/products"),
+          fetch("/api/categories")
+        ]);
+        
+        const productsData = await productsRes.json();
+        if (productsData.success) {
+          setProducts(productsData.data);
+        }
+        
+        const categoriesData = await categoriesRes.json();
+        if (categoriesData.success) {
+          setCategories(categoriesData.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch =
@@ -125,6 +77,14 @@ export default function AdminProductsPage() {
       prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
     );
   };
+
+  if (loading) {
+    return (
+      <div className="p-6 lg:p-8">
+        <div className="text-center py-12">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 lg:p-8">
@@ -159,12 +119,7 @@ export default function AdminProductsPage() {
               onChange={(e) => setCategory(e.target.value)}
               options={[
                 { value: "all", label: "All Categories" },
-                { value: "necklaces", label: "Necklaces" },
-                { value: "earrings", label: "Earrings" },
-                { value: "rings", label: "Rings" },
-                { value: "bracelets", label: "Bracelets" },
-                { value: "baptismal", label: "Baptismal" },
-                { value: "altar-sets", label: "Altar Sets" },
+                ...categories.map((c) => ({ value: c.cat_name.toLowerCase(), label: c.cat_name }))
               ]}
               className="w-40"
             />
@@ -199,124 +154,109 @@ export default function AdminProductsPage() {
 
       {/* Products Table */}
       <div className="bg-white border border-stone-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-stone-50 border-b border-stone-200">
-                <th className="px-4 py-3 text-left">
-                  <input
-                    type="checkbox"
-                    checked={selectedProducts.length === filteredProducts.length && filteredProducts.length > 0}
-                    onChange={toggleSelectAll}
-                    className="w-4 h-4 border-stone-300 rounded text-amber-600 focus:ring-amber-500"
-                  />
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-stone-500 uppercase">Product</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-stone-500 uppercase">SKU</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-stone-500 uppercase">Category</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-stone-500 uppercase">Price</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-stone-500 uppercase">Stock</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-stone-500 uppercase">Status</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-stone-500 uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-stone-100">
-              {filteredProducts.map((product) => (
+        <table className="w-full">
+          <thead className="bg-stone-50">
+            <tr>
+              <th className="px-4 py-3">
+                <input
+                  type="checkbox"
+                  checked={selectedProducts.length === filteredProducts.length && filteredProducts.length > 0}
+                  onChange={toggleSelectAll}
+                  className="w-4 h-4 rounded border-stone-300"
+                />
+              </th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-stone-500">Product</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-stone-500">Category</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-stone-500">Price</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-stone-500">Stock</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-stone-500">Status</th>
+              <th className="text-right px-4 py-3 text-sm font-medium text-stone-500">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-stone-200">
+            {filteredProducts.map((product) => {
+              const mainImage = product.images?.[0]?.pm_image || "/placeholder.jpg";
+              const price = parseFloat(product.p_price);
+              const discount = parseFloat(product.p_discount || "0");
+              const discountedPrice = discount > 0 ? price - (price * discount) / 100 : price;
+
+              return (
                 <tr key={product.p_id} className="hover:bg-stone-50">
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-4">
                     <input
                       type="checkbox"
                       checked={selectedProducts.includes(product.p_id)}
                       onChange={() => toggleSelect(product.p_id)}
-                      className="w-4 h-4 border-stone-300 rounded text-amber-600 focus:ring-amber-500"
+                      className="w-4 h-4 rounded border-stone-300"
                     />
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-stone-100 rounded overflow-hidden flex-shrink-0">
+                      <div className="w-12 h-12 bg-stone-100 rounded relative flex-shrink-0">
                         <Image
-                          src={product.images?.[0]?.pm_image || "/placeholder.jpg"}
+                          src={mainImage}
                           alt={product.p_name}
-                          width={48}
-                          height={48}
-                          className="object-cover"
+                          fill
+                          className="object-cover rounded"
                         />
                       </div>
                       <div>
                         <p className="font-medium text-stone-900">{product.p_name}</p>
-                        <p className="text-xs text-stone-500">ID: #{product.p_id}</p>
+                        <p className="text-xs text-stone-500">SKU: {product.p_code}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-sm text-stone-600">{product.p_code}</td>
-                  <td className="px-4 py-3 text-sm text-stone-600">{product.category_name}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-4 text-sm text-stone-600">
+                    {product.category_name || "-"}
+                  </td>
+                  <td className="px-4 py-4">
                     <div>
-                      <p className="font-medium text-stone-900">{formatPrice(parseFloat(product.p_price))}</p>
-                      {parseFloat(product.p_discount) > 0 && (
-                        <p className="text-xs text-stone-400 line-through">{formatPrice(parseFloat(product.p_price))}</p>
+                      <span className="font-medium text-stone-900">
+                        ₹{formatPrice(discountedPrice)}
+                      </span>
+                      {discount > 0 && (
+                        <span className="ml-2 text-xs text-stone-500 line-through">
+                          ₹{formatPrice(price)}
+                        </span>
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`text-sm font-medium ${
-                        (product.stock || 0) === 0 ? "text-red-600" : (product.stock || 0) <= 5 ? "text-orange-600" : "text-green-600"
-                      }`}
-                    >
-                      {product.stock || 0}
-                    </span>
+                  <td className="px-4 py-4 text-sm text-stone-600">
+                    {product.stock || 0}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-4">
                     <Badge variant={product.p_status === 1 ? "success" : "error"}>
                       {product.p_status === 1 ? "Active" : "Inactive"}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <Link
-                        href={`/products/${product.p_id}`}
-                        className="p-2 text-stone-500 hover:text-amber-600 hover:bg-amber-50 rounded"
-                      >
-                        <Eye className="h-4 w-4" />
+                  <td className="px-4 py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <Link href={`/products/${product.p_id}`}>
+                        <Button variant="outline" size="sm">
+                          <Eye className="h-4 w-4" />
+                        </Button>
                       </Link>
-                      <Link
-                        href={`/admin/products/${product.p_id}/edit`}
-                        className="p-2 text-stone-500 hover:text-amber-600 hover:bg-amber-50 rounded"
-                      >
-                        <Edit className="h-4 w-4" />
+                      <Link href={`/admin/products/${product.p_id}/edit`}>
+                        <Button variant="outline" size="sm">
+                          <Edit className="h-4 w-4" />
+                        </Button>
                       </Link>
-                      <button className="p-2 text-stone-500 hover:text-red-600 hover:bg-red-50 rounded">
+                      <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
                         <Trash2 className="h-4 w-4" />
-                      </button>
+                      </Button>
                     </div>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
+              );
+            })}
+          </tbody>
+        </table>
+        
         {filteredProducts.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-stone-500">No products found.</p>
+            <p className="text-stone-500">No products found</p>
           </div>
         )}
-
-        {/* Pagination */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-stone-200">
-          <p className="text-sm text-stone-500">
-            Showing {filteredProducts.length} of {products.length} products
-          </p>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" disabled>
-              Previous
-            </Button>
-            <Button variant="outline" size="sm">
-              Next
-            </Button>
-          </div>
-        </div>
       </div>
     </div>
   );

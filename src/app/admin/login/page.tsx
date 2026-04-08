@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -19,15 +20,25 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError("");
 
-    // Mock authentication - replace with actual API call
-    setTimeout(() => {
-      if (email === "admin@luxegems.in" && password === "admin123") {
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
         router.push("/admin");
       } else {
-        setError("Invalid email or password");
+        setError(data.error || "Invalid email or password");
       }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -106,9 +117,9 @@ export default function AdminLoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <a href="/" className="text-sm text-stone-500 hover:text-amber-600">
+            <Link href="/" className="text-sm text-stone-500 hover:text-amber-600">
               Back to Store
-            </a>
+            </Link>
           </div>
         </div>
 

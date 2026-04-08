@@ -1,11 +1,19 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Bell, Search, User, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function AdminHeader() {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await fetch("/api/admin/logout", { method: "POST" });
+    router.push("/admin/login");
+  };
+
   return (
     <header className="sticky top-0 z-30 h-16 bg-white border-b border-stone-200">
       <div className="flex items-center justify-between h-full px-4 lg:px-8">
@@ -42,11 +50,12 @@ export function AdminHeader() {
             </button>
           </Link>
 
-          <Link href="/">
-            <button className="p-2 text-stone-500 hover:bg-stone-100 rounded-lg">
-              <LogOut className="h-5 w-5" />
-            </button>
-          </Link>
+          <button
+            onClick={handleLogout}
+            className="p-2 text-stone-500 hover:bg-stone-100 rounded-lg"
+          >
+            <LogOut className="h-5 w-5" />
+          </button>
         </div>
       </div>
     </header>

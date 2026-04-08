@@ -6,23 +6,39 @@ import { Package, Plus, Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
 
-const mockCategories = [
-  { id: 1, name: "Necklaces", products: 24, status: "active" },
-  { id: 2, name: "Earrings", products: 18, status: "active" },
-  { id: 3, name: "Rings", products: 12, status: "active" },
-  { id: 4, name: "Bracelets", products: 15, status: "active" },
-  { id: 5, name: "Baptismal", products: 8, status: "active" },
-  { id: 6, name: "Altar Sets", products: 10, status: "active" },
-  { id: 7, name: "Communion", products: 6, status: "active" },
-  { id: 8, name: "Censors", products: 9, status: "active" },
-];
-
 export default function CategoriesPage() {
   const [search, setSearch] = React.useState("");
+  const [categories, setCategories] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
-  const filteredCategories = mockCategories.filter(cat =>
-    cat.name.toLowerCase().includes(search.toLowerCase())
+  React.useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await fetch("/api/categories");
+        const data = await res.json();
+        if (data.success) {
+          setCategories(data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch categories:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCategories();
+  }, []);
+
+  const filteredCategories = categories.filter(cat =>
+    cat.cat_name?.toLowerCase().includes(search.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <div className="p-6 lg:p-8">
+        <div className="text-center py-12">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 lg:p-8">
@@ -50,8 +66,8 @@ export default function CategoriesPage() {
             <Select
               options={[
                 { value: "all", label: "All Status" },
-                { value: "active", label: "Active" },
-                { value: "inactive", label: "Inactive" },
+                { value: "1", label: "Active" },
+                { value: "0", label: "Inactive" },
               ]}
               className="w-40"
             />
@@ -70,13 +86,13 @@ export default function CategoriesPage() {
           </thead>
           <tbody className="divide-y divide-stone-200">
             {filteredCategories.map((category) => (
-              <tr key={category.id} className="hover:bg-stone-50">
-                <td className="px-6 py-4 text-sm text-stone-500">{category.id}</td>
-                <td className="px-6 py-4 text-sm font-medium text-stone-900">{category.name}</td>
-                <td className="px-6 py-4 text-sm text-stone-500">{category.products}</td>
+              <tr key={category.cat_id} className="hover:bg-stone-50">
+                <td className="px-6 py-4 text-sm text-stone-500">{category.cat_id}</td>
+                <td className="px-6 py-4 text-sm font-medium text-stone-900">{category.cat_name}</td>
+                <td className="px-6 py-4 text-sm text-stone-500">{category.product_count || 0}</td>
                 <td className="px-6 py-4">
-                  <span className="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded">
-                    {category.status}
+                  <span className={`inline-flex px-2 py-1 text-xs font-medium rounded ${category.cat_status === '1' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    {category.cat_status === '1' ? 'Active' : 'Inactive'}
                   </span>
                 </td>
                 <td className="px-6 py-4">

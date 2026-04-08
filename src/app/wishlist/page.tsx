@@ -6,51 +6,11 @@ import Image from "next/image";
 import { Trash2, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/ui/product-card";
+import { useWishlist } from "@/lib/wishlist-context";
 import type { Product } from "@/types";
 
-const wishlistItems: Product[] = [
-  {
-    p_id: 1,
-    p_slid: "Admin",
-    p_catid: "82",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Elegant Gold-Plated Necklace Set",
-    p_code: "SH-1001",
-    p_price: "1256",
-    p_discount: "10",
-    p_weight: 0,
-    p_description: "Exquisite gold-plated necklace set perfect for weddings and special occasions",
-    p_date: "2026-02-05",
-    p_status: 1,
-    category_name: "Necklaces",
-    images: [{ pm_id: 1, pm_pid: "1", pm_image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600", pm_status: "1" }],
-  },
-  {
-    p_id: 2,
-    p_slid: "Admin",
-    p_catid: "83",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Traditional Silver Altar Set",
-    p_code: "AS-1001",
-    p_price: "5000",
-    p_discount: "10",
-    p_weight: 0,
-    p_description: "Handcrafted silver altar set for religious ceremonies",
-    p_date: "2026-02-05",
-    p_status: 1,
-    category_name: "Altar Sets",
-    images: [{ pm_id: 2, pm_pid: "2", pm_image: "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=600", pm_status: "1" }],
-  },
-];
-
 export default function WishlistPage() {
-  const [items, setItems] = React.useState(wishlistItems);
-
-  const removeItem = (id: number) => {
-    setItems(items.filter(item => item.p_id !== id));
-  };
+  const { items, removeFromWishlist } = useWishlist();
 
   if (items.length === 0) {
     return (
@@ -82,7 +42,7 @@ export default function WishlistPage() {
             <div key={product.p_id} className="relative group">
               <ProductCard product={product} />
               <button
-                onClick={() => removeItem(product.p_id)}
+                onClick={() => removeFromWishlist(product.p_id)}
                 className="absolute top-4 right-4 z-10 p-2 bg-white/90 backdrop-blur-sm text-rose-500 hover:bg-rose-50 transition-colors"
               >
                 <Trash2 className="h-5 w-5" />

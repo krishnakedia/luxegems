@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navigation } from "@/components/ui/navigation";
 import { Footer } from "@/components/ui/footer";
 import { CartProvider } from "@/lib/cart-context";
+import { WishlistProvider } from "@/lib/wishlist-context";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -81,9 +82,11 @@ export default function RootLayout({
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
       <body className="font-sans antialiased bg-white text-stone-900">
         <CartProvider>
-          <Navigation />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <WishlistProvider>
+            <Navigation />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </WishlistProvider>
         </CartProvider>
       </body>
     </html>

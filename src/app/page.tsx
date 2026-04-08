@@ -4,197 +4,108 @@ import { ArrowRight, Sparkles, Shield, Truck, RefreshCw, Gem } from "lucide-reac
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProductCard } from "@/components/ui/product-card";
+import { query } from "@/lib/db";
 import type { Product, Category } from "@/types";
 
-// Mock data - in production, fetch from database
-const featuredProducts: Product[] = [
-  {
-    p_id: 1,
-    p_slid: "Admin",
-    p_catid: "82",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Elegant Gold-Plated Necklace Set",
-    p_code: "SH-1001",
-    p_price: "1256",
-    p_discount: "10",
-    p_weight: 0,
-    p_description: "Exquisite gold-plated necklace set perfect for weddings and special occasions",
-    p_date: "2026-02-05",
-    p_status: 1,
-    category_name: "Necklaces",
-    images: [{ pm_id: 1, pm_pid: "1", pm_image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600", pm_status: "1" }],
-  },
-  {
-    p_id: 2,
-    p_slid: "Admin",
-    p_catid: "83",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Traditional Silver Altar Set",
-    p_code: "AS-1001",
-    p_price: "5000",
-    p_discount: "10",
-    p_weight: 0,
-    p_description: "Handcrafted silver altar set for religious ceremonies",
-    p_date: "2026-02-05",
-    p_status: 1,
-    category_name: "Altar Sets",
-    images: [{ pm_id: 2, pm_pid: "2", pm_image: "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=600", pm_status: "1" }],
-  },
-  {
-    p_id: 3,
-    p_slid: "Admin",
-    p_catid: "85",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Brass Censor with Chain",
-    p_code: "CE-100",
-    p_price: "6500",
-    p_discount: "8",
-    p_weight: 0,
-    p_description: "Premium brass censor with decorative chain",
-    p_date: "2026-02-05",
-    p_status: 1,
-    category_name: "Censors",
-    images: [{ pm_id: 3, pm_pid: "3", pm_image: "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=600", pm_status: "1" }],
-  },
-  {
-    p_id: 4,
-    p_slid: "Admin",
-    p_catid: "86",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Crystal Candlesticks Pair",
-    p_code: "CA-1001",
-    p_price: "7000",
-    p_discount: "15",
-    p_weight: 0,
-    p_description: "Beautiful crystal candlesticks for home decor",
-    p_date: "2026-02-06",
-    p_status: 1,
-    category_name: "Candlesticks",
-    images: [{ pm_id: 4, pm_pid: "4", pm_image: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600", pm_status: "1" }],
-  },
-];
+async function getProducts(limit: number = 8) {
+  try {
+    const products = await query<Product[]>(`
+      SELECT p.*, c.cat_name as category_name,
+             (SELECT pm_image FROM product_image WHERE pm_pid = p.p_id LIMIT 1) as main_image
+      FROM product p
+      LEFT JOIN category c ON p.p_catid = c.cat_id
+      WHERE p.p_status = 1
+      ORDER BY p.p_id DESC LIMIT ?
+    `, [limit]);
+    
+    const productsWithImages = await Promise.all(
+      (products as Product[]).map(async (product) => {
+        const images = await query<{ pm_id: number; pm_pid: string; pm_image: string; pm_status: string }[]>(
+          "SELECT pm_id, pm_pid, pm_image, pm_status FROM product_image WHERE pm_pid = ? LIMIT 4",
+          [product.p_id]
+        );
+        return { ...product, images };
+      })
+    );
+    
+    return productsWithImages;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
+}
 
-const newArrivals: Product[] = [
-  {
-    p_id: 5,
-    p_slid: "Admin",
-    p_catid: "84",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "First Communion Set",
-    p_code: "22180",
-    p_price: "9000",
-    p_discount: "5",
-    p_weight: 0,
-    p_description: "Beautiful communion set for your special day",
-    p_date: "2026-02-05",
-    p_status: 1,
-    category_name: "Communion",
-    images: [{ pm_id: 5, pm_pid: "5", pm_image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", pm_status: "1" }],
-  },
-  {
-    p_id: 6,
-    p_slid: "Admin",
-    p_catid: "82",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Baptismal Shells - Premium",
-    p_code: "22203",
-    p_price: "2000",
-    p_discount: "2",
-    p_weight: 0,
-    p_description: "Elegant baptismal shells for sacred ceremonies",
-    p_date: "2026-02-07",
-    p_status: 1,
-    category_name: "Baptismal",
-    images: [{ pm_id: 6, pm_pid: "6", pm_image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", pm_status: "1" }],
-  },
-  {
-    p_id: 7,
-    p_slid: "Admin",
-    p_catid: "83",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Designer Altar Table",
-    p_code: "AS-1002",
-    p_price: "8596",
-    p_discount: "6",
-    p_weight: 0,
-    p_description: "Designer altar table with intricate carvings",
-    p_date: "2026-02-05",
-    p_status: 1,
-    category_name: "Altar Sets",
-    images: [{ pm_id: 7, pm_pid: "7", pm_image: "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=600", pm_status: "1" }],
-  },
-  {
-    p_id: 8,
-    p_slid: "Admin",
-    p_catid: "85",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Antique Brass Censor",
-    p_code: "CE-1001",
-    p_price: "6500",
-    p_discount: "8",
-    p_weight: 0,
-    p_description: "Antique style brass censor with premium finish",
-    p_date: "2026-02-05",
-    p_status: 1,
-    category_name: "Censors",
-    images: [{ pm_id: 8, pm_pid: "8", pm_image: "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=600", pm_status: "1" }],
-  },
-];
+async function getCategories() {
+  try {
+    const categories = await query<(Category & { product_count?: number })[]>(`
+      SELECT c.*, COUNT(p.p_id) as product_count
+      FROM category c
+      LEFT JOIN product p ON c.cat_id = p.p_catid AND p.p_status = 1
+      WHERE c.cat_status = 1
+      GROUP BY c.cat_id
+      ORDER BY c.cat_seq, c.cat_id
+    `);
+    return categories;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
+  }
+}
 
-const categories: Category[] = [
-  { cat_id: 1, cat_name: "Necklaces", cat_seq: "", cat_image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400", cat_status: "1", cat_date: "" },
-  { cat_id: 2, cat_name: "Earrings", cat_seq: "", cat_image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400", cat_status: "1", cat_date: "" },
-  { cat_id: 3, cat_name: "Rings", cat_seq: "", cat_image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400", cat_status: "1", cat_date: "" },
-  { cat_id: 4, cat_name: "Bracelets", cat_seq: "", cat_image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400", cat_status: "1", cat_date: "" },
-  { cat_id: 5, cat_name: "Baptismal", cat_seq: "", cat_image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400", cat_status: "1", cat_date: "" },
-  { cat_id: 6, cat_name: "Altar Sets", cat_seq: "", cat_image: "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=400", cat_status: "1", cat_date: "" },
-  { cat_id: 7, cat_name: "Communion", cat_seq: "", cat_image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400", cat_status: "1", cat_date: "" },
-  { cat_id: 8, cat_name: "Censors", cat_seq: "", cat_image: "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=400", cat_status: "1", cat_date: "" },
-];
+async function getTestimonials() {
+  try {
+    const reviews = await query<any[]>(`
+      SELECT r.re_id, r.re_name, r.re_desc
+      FROM review r
+      WHERE r.re_status = '1'
+      ORDER BY r.re_id DESC
+      LIMIT 6
+    `);
+    
+    return reviews.map(r => ({
+      id: r.re_id,
+      name: r.re_name,
+      location: "Customer",
+      text: r.re_desc,
+      rating: 5,
+      avatar: r.re_name.charAt(0),
+    }));
+  } catch (error) {
+    console.error("Error fetching testimonials:", error);
+    return [];
+  }
+}
 
-const testimonials = [
-  {
-    id: 1,
-    name: "Priya Sharma",
-    location: "Mumbai, Maharashtra",
-    text: "Absolutely stunning pieces! The quality exceeded my expectations. Will definitely order again.",
-    rating: 5,
-    avatar: "PS",
-  },
-  {
-    id: 2,
-    name: "Anita Desai",
-    location: "Delhi NCR",
-    text: "Found the perfect wedding jewelry for my daughter's ceremony. Great service and fast delivery.",
-    rating: 5,
-    avatar: "AD",
-  },
-  {
-    id: 3,
-    name: "Maria Fernandes",
-    location: "Goa",
-    text: "Love the religious collection. The baptismal set we ordered was beautifully crafted.",
-    rating: 5,
-    avatar: "MF",
-  },
-];
+async function getSliders() {
+  try {
+    const sliders = await query<any[]>(`
+      SELECT * FROM slider_img WHERE img_status = '1' ORDER BY img_id DESC
+    `);
+    return sliders;
+  } catch (error) {
+    console.error("Error fetching sliders:", error);
+    return [];
+  }
+}
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [products, categories, testimonials, sliders] = await Promise.all([
+    getProducts(8),
+    getCategories(),
+    getTestimonials(),
+    getSliders()
+  ]);
+
+  const featuredProducts = products.slice(0, 4);
+  const newArrivals = products.slice(4, 8);
+
   return (
     <>
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center">
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=1920"
+            src={sliders[0]?.img_name || "https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=1920"}
             alt="Luxury Jewelry"
             fill
             className="object-cover"

@@ -11,77 +11,6 @@ import { ProductCard } from "@/components/ui/product-card";
 import { Select } from "@/components/ui/input";
 import type { Product } from "@/types";
 
-const mockProducts: Product[] = [
-  {
-    p_id: 1,
-    p_slid: "Admin",
-    p_catid: "82",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Elegant Gold-Plated Necklace Set",
-    p_code: "SH-1001",
-    p_price: "1256",
-    p_discount: "10",
-    p_weight: 0,
-    p_description: "Exquisite gold-plated necklace set perfect for weddings and special occasions",
-    p_date: "2026-02-05",
-    p_status: 1,
-    category_name: "Necklaces",
-    images: [{ pm_id: 1, pm_pid: "1", pm_image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600", pm_status: "1" }],
-  },
-  {
-    p_id: 2,
-    p_slid: "Admin",
-    p_catid: "82",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Pearl Necklace with Gold Clasp",
-    p_code: "SH-1002",
-    p_price: "2500",
-    p_discount: "15",
-    p_weight: 0,
-    p_description: "Beautiful pearl necklace with elegant gold clasp",
-    p_date: "2026-02-05",
-    p_status: 1,
-    category_name: "Necklaces",
-    images: [{ pm_id: 2, pm_pid: "2", pm_image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600", pm_status: "1" }],
-  },
-  {
-    p_id: 3,
-    p_slid: "Admin",
-    p_catid: "82",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Kundan Necklace Set",
-    p_code: "SH-1003",
-    p_price: "4500",
-    p_discount: "20",
-    p_weight: 0,
-    p_description: "Traditional Kundan necklace set with intricate work",
-    p_date: "2026-02-05",
-    p_status: 1,
-    category_name: "Necklaces",
-    images: [{ pm_id: 3, pm_pid: "3", pm_image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600", pm_status: "1" }],
-  },
-  {
-    p_id: 4,
-    p_slid: "Admin",
-    p_catid: "82",
-    p_scatid: "",
-    p_scname: "",
-    p_name: "Temple Jewelry Set",
-    p_code: "SH-1004",
-    p_price: "6500",
-    p_discount: "10",
-    p_weight: 0,
-    p_description: "Beautiful temple jewelry set for traditional occasions",
-    p_date: "2026-02-06",
-    p_status: 1,
-    category_name: "Necklaces",
-    images: [{ pm_id: 4, pm_pid: "4", pm_image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600", pm_status: "1" }],
-  },
-];
-
 const collections = {
   wedding: {
     title: "Wedding Collection",
@@ -107,11 +36,30 @@ const collections = {
 
 export default function CollectionPage({ params }: { params: { collection: string } }) {
   const collection = collections[params.collection as keyof typeof collections] || collections.wedding;
+  const [products, setProducts] = React.useState<Product[]>([]);
+  const [loading, setLoading] = React.useState(true);
   const [viewMode, setViewMode] = React.useState<"grid" | "list">("grid");
   const [showFilters, setShowFilters] = React.useState(false);
   const [sortBy, setSortBy] = React.useState("featured");
 
-  const sortedProducts = [...mockProducts].sort((a, b) => {
+  React.useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const res = await fetch("/api/products?limit=50");
+        const data = await res.json();
+        if (data.success) {
+          setProducts(data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch products:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProducts();
+  }, []);
+
+  const sortedProducts = [...products].sort((a, b) => {
     switch (sortBy) {
       case "price-low":
         return parseFloat(a.p_price) - parseFloat(b.p_price);
@@ -119,35 +67,35 @@ export default function CollectionPage({ params }: { params: { collection: strin
         return parseFloat(b.p_price) - parseFloat(a.p_price);
       case "newest":
         return new Date(b.p_date).getTime() - new Date(a.p_date).getTime();
-      case "name":
-        return a.p_name.localeCompare(b.p_name);
       default:
         return 0;
     }
   });
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       {/* Hero */}
-      <div className="relative h-80 bg-stone-900">
+      <div className="relative h-64 md:h-80 bg-stone-900">
         <Image
           src={collection.heroImage}
           alt={collection.title}
           fill
-          className="object-cover opacity-50"
+          className="object-cover opacity-40"
         />
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center text-white">
-            <h1 className="text-4xl font-light mb-2">{collection.title}</h1>
-            <p className="text-stone-300">{collection.description}</p>
+          <div className="text-center text-white px-4">
+            <h1 className="text-3xl md:text-4xl font-light mb-4">{collection.title}</h1>
+            <p className="text-stone-300 max-w-xl mx-auto">{collection.description}</p>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-12">
         {/* Toolbar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-8 border-b border-stone-200">
-          <p className="text-stone-500">{sortedProducts.length} products</p>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+          <p className="text-stone-500">
+            {loading ? "Loading..." : `${sortedProducts.length} products found`}
+          </p>
 
           <div className="flex items-center gap-4">
             <Select
@@ -158,7 +106,6 @@ export default function CollectionPage({ params }: { params: { collection: strin
                 { value: "newest", label: "Newest First" },
                 { value: "price-low", label: "Price: Low to High" },
                 { value: "price-high", label: "Price: High to Low" },
-                { value: "name", label: "Name: A-Z" },
               ]}
               className="w-48"
             />
@@ -181,24 +128,22 @@ export default function CollectionPage({ params }: { params: { collection: strin
         </div>
 
         {/* Products Grid */}
-        {sortedProducts.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-stone-500 mb-4">No products found in this collection.</p>
-            <Link href="/products">
-              <Button variant="outline">View All Products</Button>
-            </Link>
+        {loading ? (
+          <div className="text-center py-12">
+            <p className="text-stone-500">Loading products...</p>
           </div>
-        ) : viewMode === "grid" ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        ) : sortedProducts.length > 0 ? (
+          <div className={`grid gap-6 ${viewMode === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"}`}>
             {sortedProducts.map((product) => (
-              <ProductCard key={product.p_id} product={product} />
+              <ProductCard key={product.p_id} product={product} variant={viewMode === "list" ? "horizontal" : "default"} />
             ))}
           </div>
         ) : (
-          <div className="space-y-4">
-            {sortedProducts.map((product) => (
-              <ProductCard key={product.p_id} product={product} variant="horizontal" />
-            ))}
+          <div className="text-center py-12">
+            <p className="text-stone-500">No products found in this collection.</p>
+            <Link href="/products" className="text-amber-600 hover:underline mt-4 inline-block">
+              Browse all products
+            </Link>
           </div>
         )}
       </div>

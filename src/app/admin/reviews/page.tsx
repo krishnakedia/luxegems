@@ -4,19 +4,43 @@ import * as React from "react";
 import { Star, MessageSquare, User, CheckCircle, XCircle, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const mockReviews = [
-  { id: 1, product: "Elegant Gold-Plated Necklace Set", customer: "John Doe", rating: 5, comment: "Beautiful necklace! Exactly as shown.", date: "2026-04-05", status: "approved" },
-  { id: 2, product: "Traditional Silver Altar Set", customer: "Sarah Smith", rating: 4, comment: "Good quality but delivery was delayed.", date: "2026-04-04", status: "pending" },
-  { id: 3, product: "Brass Censor with Chain", customer: "Mike Johnson", rating: 5, comment: "Excellent product, highly recommend!", date: "2026-04-03", status: "approved" },
-  { id: 4, product: "Crystal Candlesticks Pair", customer: "Emily Brown", rating: 3, comment: "Okay product, but expected better packaging.", date: "2026-04-02", status: "pending" },
-];
-
 export default function ReviewsPage() {
   const [filter, setFilter] = React.useState("all");
+  const [reviews, setReviews] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
-  const filteredReviews = mockReviews.filter(review => 
-    filter === "all" || review.status === filter
+  React.useEffect(() => {
+    async function fetchReviews() {
+      try {
+        const res = await fetch("/api/reviews");
+        const data = await res.json();
+        if (data.success) {
+          setReviews(data.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch reviews:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchReviews();
+  }, []);
+
+  const filteredReviews = reviews.filter(review => 
+    filter === "all" || review.re_status === filter
   );
+
+  const avgRating = reviews.length > 0 
+    ? (reviews.reduce((acc: number, r: any) => acc + (r.re_rating || 4), 0) / reviews.length).toFixed(1)
+    : "0";
+
+  if (loading) {
+    return (
+      <div className="p-6 lg:p-8">
+        <div className="text-center py-12">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 lg:p-8">
@@ -35,7 +59,7 @@ export default function ReviewsPage() {
             </div>
             <div>
               <p className="text-sm text-stone-500">Average Rating</p>
-              <p className="text-2xl font-semibold text-stone-900">4.2</p>
+              <p className="text-2xl font-semibold text-stone-900">{avgRating}</p>
             </div>
           </div>
         </div>
@@ -46,77 +70,102 @@ export default function ReviewsPage() {
             </div>
             <div>
               <p className="text-sm text-stone-500">Total Reviews</p>
-              <p className="text-2xl font-semibold text-stone-900">156</p>
+              <p className="text-2xl font-semibold text-stone-900">{reviews.length}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white border border-stone-200 p-6">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-green-100 rounded-full">
+              <CheckCircle className="h-5 w-5 text-green-600" />
+            </div>
+            <div>
+              <p className="text-sm text-stone-500">Approved</p>
+              <p className="text-2xl font-semibold text-stone-900">
+                {reviews.filter(r => r.re_status === "1").length}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white border border-stone-200 p-6">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-yellow-100 rounded-full">
+              <XCircle className="h-5 w-5 text-yellow-600" />
+            </div>
+            <div>
+              <p className="text-sm text-stone-500">Pending</p>
+              <p className="text-2xl font-semibold text-stone-900">
+                {reviews.filter(r => r.re_status === "0").length}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-stone-200">
-        <div className="p-4 border-b border-stone-200 flex gap-2">
-          {["all", "pending", "approved"].map((status) => (
-            <Button
-              key={status}
-              variant={filter === status ? "default" : "outline"}
-              size="sm"
-              onClick={() => setFilter(status)}
-            >
-              {status.charAt(0).toUpperCase() + status.slice(1)}
-            </Button>
-          ))}
-        </div>
+      {/* Filters */}
+      <div className="flex gap-2 mb-6">
+        {["all", "1", "0"].map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`px-4 py-2 rounded-full text-sm font-medium ${
+              filter === f
+                ? "bg-amber-600 text-white"
+                : "bg-white border border-stone-200 text-stone-600 hover:bg-stone-50"
+            }`}
+          >
+            {f === "all" ? "All" : f === "1" ? "Approved" : "Pending"}
+          </button>
+        ))}
+      </div>
 
-        <table className="w-full">
-          <thead className="bg-stone-50">
-            <tr>
-              <th className="text-left px-6 py-3 text-sm font-medium text-stone-500">Product</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-stone-500">Customer</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-stone-500">Rating</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-stone-500">Comment</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-stone-500">Date</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-stone-500">Status</th>
-              <th className="text-left px-6 py-3 text-sm font-medium text-stone-500">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-stone-200">
-            {filteredReviews.map((review) => (
-              <tr key={review.id} className="hover:bg-stone-50">
-                <td className="px-6 py-4 text-sm font-medium text-stone-900">{review.product}</td>
-                <td className="px-6 py-4 text-sm text-stone-500">{review.customer}</td>
-                <td className="px-6 py-4">
-                  <div className="flex gap-1">
+      {/* Reviews List */}
+      <div className="bg-white border border-stone-200">
+        {filteredReviews.length > 0 ? (
+          filteredReviews.map((review) => (
+            <div key={review.re_id} className="p-6 border-b border-stone-200 last:border-b-0">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+                      <span className="text-amber-700 font-medium">
+                        {review.re_name?.charAt(0) || "C"}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-stone-900">{review.re_name}</p>
+                      <p className="text-xs text-stone-500">{review.re_date}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 mb-2">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        className={`h-4 w-4 ${i < review.rating ? "text-amber-500 fill-amber-500" : "text-stone-300"}`}
+                        className={`h-4 w-4 ${
+                          i < 4 ? "text-amber-500 fill-current" : "text-stone-300"
+                        }`}
                       />
                     ))}
                   </div>
-                </td>
-                <td className="px-6 py-4 text-sm text-stone-500 max-w-xs truncate">{review.comment}</td>
-                <td className="px-6 py-4 text-sm text-stone-500">{review.date}</td>
-                <td className="px-6 py-4">
-                  <span className={`inline-flex px-2 py-1 text-xs font-medium rounded ${
-                    review.status === "approved" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
-                  }`}>
-                    {review.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex gap-2">
-                    {review.status === "pending" && (
-                      <>
-                        <Button variant="outline" size="sm" className="text-green-600">Approve</Button>
-                        <Button variant="outline" size="sm" className="text-red-600">Reject</Button>
-                      </>
-                    )}
-                    <Button variant="outline" size="sm">View</Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  <h4 className="font-medium text-stone-900 mb-1">{review.re_title}</h4>
+                  <p className="text-stone-600 text-sm">{review.re_desc}</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm">
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                    <XCircle className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-stone-500">No reviews found</p>
+          </div>
+        )}
       </div>
     </div>
   );

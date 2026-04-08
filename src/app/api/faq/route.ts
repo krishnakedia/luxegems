@@ -1,11 +1,5 @@
-import { Metadata } from "next";
-import { ChevronDown } from "lucide-react";
+import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
-
-export const metadata: Metadata = {
-  title: "FAQs | LUXEGEMS",
-  description: "Frequently Asked Questions about LUXEGEMS jewelry products, orders, and services.",
-};
 
 interface Faq {
   id: number;
@@ -13,13 +7,15 @@ interface Faq {
   answer: string;
 }
 
-async function getFaqs() {
+export async function GET() {
   try {
-    const cmsFaqs = await query<{ pg_id: number; pg_name: string; pg_desc: string }[]>(`
-      SELECT pg_id, pg_name, pg_desc FROM create_page WHERE pg_name = 'FAQ'
+    const faqs = await query<Faq[]>(`
+      SELECT pg_id as id, pg_name as question, pg_desc as answer 
+      FROM create_page 
+      WHERE pg_name = 'FAQ'
     `);
 
-    const staticFaqs: Faq[] = [
+    const staticFaqs = [
       {
         id: 101,
         question: "How do I place an order?",
@@ -72,60 +68,16 @@ async function getFaqs() {
       }
     ];
 
-    if (cmsFaqs && cmsFaqs.length > 0) {
-      return [
-        ...cmsFaqs.map(f => ({ id: f.pg_id, question: f.pg_name, answer: f.pg_desc })),
-        ...staticFaqs
-      ];
+    if (faqs && faqs.length > 0) {
+      return NextResponse.json({ success: true, data: [...faqs, ...staticFaqs] });
     }
 
-    return staticFaqs;
+    return NextResponse.json({ success: true, data: staticFaqs });
   } catch (error) {
-    console.error("Error fetching FAQs:", error);
-    return [];
+    console.error("FAQ fetch error:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to fetch FAQs" },
+      { status: 500 }
+    );
   }
-}
-
-export default async function FAQPage() {
-  const faqs = await getFaqs();
-
-  return (
-    <div className="min-h-screen">
-      {/* Hero */}
-      <div className="bg-stone-900 text-white py-20">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-light mb-2">Frequently Asked Questions</h1>
-          <p className="text-stone-300">Find answers to common questions</p>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-16 max-w-4xl">
-        {faqs.length > 0 ? (
-          <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <details key={faq.id} className="group bg-white border border-stone-200">
-                <summary className="flex items-center justify-between p-6 cursor-pointer">
-                  <span className="text-lg font-medium text-stone-900">{faq.question}</span>
-                  <ChevronDown className="h-5 w-5 text-stone-500 group-open:rotate-180 transition-transform" />
-                </summary>
-                <div className="px-6 pb-6">
-                  <p className="text-stone-600 leading-relaxed">{faq.answer}</p>
-                </div>
-              </details>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-stone-500">No FAQs available yet.</p>
-          </div>
-        )}
-
-        <div className="mt-12 p-6 bg-amber-50 border border-amber-200">
-          <h3 className="text-lg font-medium text-stone-900 mb-2">Still have questions?</h3>
-          <p className="text-stone-600 mb-4">Can't find the answer you're looking for? Contact our support team.</p>
-          <a href="/contact" className="text-amber-700 font-medium hover:underline">Contact Us →</a>
-        </div>
-      </div>
-    </div>
-  );
 }
