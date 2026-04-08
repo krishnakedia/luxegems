@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { Button } from "./button";
 import { Badge } from "./badge";
+import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 
 interface NavItem {
   label: string;
@@ -76,6 +78,10 @@ export function Navigation() {
   const [activeDropdown, setActiveDropdown] = React.useState<string | null>(null);
   const [categories, setCategories] = React.useState(staticCategories);
   const pathname = usePathname();
+  const { getCartCount } = useCart();
+  const { items: wishlistItems } = useWishlist();
+  const cartCount = getCartCount();
+  const wishlistCount = wishlistItems.length;
 
   React.useEffect(() => {
     async function fetchCategories() {
@@ -175,18 +181,22 @@ export function Navigation() {
               className="p-2.5 text-stone-700 hover:text-amber-700 transition-colors relative"
             >
               <Heart className="h-5 w-5" />
-              <Badge variant="gold" className="absolute -top-0.5 -right-0.5 h-4 w-4 p-0 flex items-center justify-center text-[10px]">
-                0
-              </Badge>
+              {wishlistCount > 0 && (
+                <Badge variant="gold" className="absolute -top-0.5 -right-0.5 h-4 w-4 p-0 flex items-center justify-center text-[10px]">
+                  {wishlistCount}
+                </Badge>
+              )}
             </Link>
             <Link
               href="/cart"
               className="p-2.5 text-stone-700 hover:text-amber-700 transition-colors relative"
             >
               <ShoppingBag className="h-5 w-5" />
-              <Badge variant="gold" className="absolute -top-0.5 -right-0.5 h-4 w-4 p-0 flex items-center justify-center text-[10px]">
-                0
-              </Badge>
+              {cartCount > 0 && (
+                <Badge variant="gold" className="absolute -top-0.5 -right-0.5 h-4 w-4 p-0 flex items-center justify-center text-[10px]">
+                  {cartCount}
+                </Badge>
+              )}
             </Link>
             <Link
               href="/account"

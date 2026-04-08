@@ -9,9 +9,13 @@ export async function GET(request: Request) {
     const limit = searchParams.get("limit") || "50";
     const offset = searchParams.get("offset") || "0";
 
+    await query(
+      `DELETE FROM \`order\` WHERE order_status IN ('1', 'pending') AND order_date < DATE_SUB(NOW(), INTERVAL 1 MONTH)`
+    );
+
     let sql = `
       SELECT o.*, nu.nu_name as customer_name, nu.nu_email, nu.nu_number,
-             sd.spp_address, sd.spp_city, sd.spp_state, sd.spp_pin
+             sd.spp_address, sd.spp_city, sd.spp_state, sd.spp_pin, sd.spp_name as shipping_name, sd.spp_number as shipping_phone
       FROM \`order\` o
       LEFT JOIN new_user nu ON o.order_nuid = nu.nu_id
       LEFT JOIN shipping_details sd ON o.order_shipid = sd.spp_id
@@ -19,9 +23,16 @@ export async function GET(request: Request) {
     `;
     const params: any[] = [];
 
-    if (status) {
+    if (status && status !== "all") {
+      const statusMap: Record<string, string> = {
+        pending: "1",
+        processing: "2",
+        shipped: "3",
+        delivered: "4",
+      };
+      const dbStatus = statusMap[status] || status;
       sql += " AND o.order_status = ?";
-      params.push(status);
+      params.push(dbStatus);
     }
 
     sql += " ORDER BY o.order_id DESC LIMIT ? OFFSET ?";
@@ -53,7 +64,7 @@ export async function POST(request: Request) {
       total,
     } = body;
 
-    const order_uid = generateOrderId();
+    const order_uid = `ODR${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
     const result = await query(`
       INSERT INTO \`order\` (
@@ -65,17 +76,35 @@ export async function POST(request: Request) {
       subtotal,
       total,
       order_uid,
-      shipping_address.spp_id || null,
+      shipping_address.spp_id || shipping_address.spp_id || null,
       shipping_charges,
       payment_method,
       "1",
       payment_method === "cod" ? "unpaid" : "paid",
     ]);
 
+    const orderId = (result as any).insertId;
+
+    if (items && items.length > 0) {
+      for (const item of items) {
+        await query(
+          `INSERT INTO cart_details (cd_coid, cd_pid, cd_price, cd_qty, cd_netprice)
+           VALUES (?, ?, ?, ?, ?)`,
+          [
+            orderId,
+            item.cp_pid,
+            item.cp_poprice || item.cp_price || 0,
+            item.cp_quantity || 1,
+            item.cp_total || 0,
+          ]
+        );
+      }
+    }
+
     return NextResponse.json({
       success: true,
       data: {
-        order_id: (result as any).insertId,
+        order_id: orderId,
         order_uid,
       },
     });

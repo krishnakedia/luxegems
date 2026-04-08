@@ -1,14 +1,53 @@
-index page logic are not working properly means when i click on add to create it don't show item is added and in header also it doesn't show no of product added to cart or wishlist.
-added to cart should be fixed and it should show how many product are added to cart.
-A param property was accessed directly with `params.collection`. `params` is a Promise and must be unwrapped with `React.use()` before accessing its properties.
-in admin section there should be only admin header and footer not ecommerce header or footer.
-and number should be 7003813603 or 8961941902 and in email kediakrishna65@gmail.com and there should be many social media option which can be added or modify by admin.
-there is admin login issue and in admin table a_password should be md5 increpted and there should be a auto trim and double space correction.
-unable to login
-order is not saved in admin
-there is 2 rs symbol in product page in admin
-edit page not found
-add customer is not working
-many pages in admin not working
-order details page should contain a qr code to add review to the product 
-admin is not working properly
+Project Type: Existing E-Commerce Website
+Goal: Fix issues and upgrade to a professional, high-performance version
+
+Tasks & Requirements:
+
+1. Wishlist:
+   - Ensure the wishlist works correctly on all pages.
+   - Add/remove items should update dynamically without page reload.
+
+2. Dynamic Data:
+   - All numbers, product details, prices, and vendor information should be dynamic.
+   - Ensure product quantities and stock updates dynamically.
+
+3. Contact Us:
+   - Make contact form fully dynamic.
+   - Messages should be saved to the backend and be accessible in admin.
+
+4. Performance Optimization:
+   - Speed up the website.
+   - Reduce page load times, optimize cart addition.
+   - Ensure images load fast across all pages.
+
+5. Product Images:
+   - Fix missing images on listing pages.
+   - Ensure images from product details appear correctly everywhere.
+
+6. Testimonials:
+   - Implement visually appealing testimonials using inspiration from:
+     https://21st.dev/community/components
+
+7. Indian States:
+   - Include all Indian states in dropdowns for addresses, shipping, and billing.
+
+8. Admin Panel:
+   - Only accessible after admin login.
+   - Hide e-commerce header and footer in admin pages.
+   - Admin can manage products, orders, vendors, and users.
+
+9. Multi-Vendor:
+   - Maintain separate dashboards for vendors.
+   - Vendors can add/edit products and view orders.
+   - Ensure proper access control.
+
+10. Design & UI/UX:
+    - Upgrade to a premium, ultra-luxury look.
+    - Use clean, modern, high-end design aesthetics.
+
+11. Files & Deployment:
+    - Keep existing project structure.
+    - Provide updated code for frontend, backend, and admin.
+    - Ensure all dynamic functionalities and optimizations are included.
+
+End Goal: A fully functional, fast, premium, multi-vendor e-commerce site with fixed bugs, dynamic data, improved UX, and professional-grade features.

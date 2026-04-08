@@ -31,48 +31,134 @@ export default function CheckoutPage() {
   const total = subtotal + shipping;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    
+    if (name === "phone" && value.length >= 10) {
+      fetchCustomerByPhone(value);
+    }
+  };
+
+  const fetchCustomerByPhone = async (phone: string) => {
+    try {
+      const res = await fetch(`/api/customers?phone=${encodeURIComponent(phone)}`);
+      const data = await res.json();
+      if (data.success && data.data) {
+        const customer = data.data;
+        setFormData(prev => ({
+          ...prev,
+          firstName: customer.nu_name?.split(" ")[0] || "",
+          lastName: customer.nu_name?.split(" ").slice(1).join(" ") || "",
+          email: customer.nu_email || prev.email,
+          address: customer.nu_address || prev.address,
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to fetch customer:", error);
+    }
   };
 
   const handlePlaceOrder = async () => {
     setLoading(true);
     
-    const newOrderId = `ODR${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-    setOrderId(newOrderId);
-    
-    const invoiceData = {
-      orderId: newOrderId,
-      date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }),
-      items: items,
-      shippingDetails: {
-        spp_name: `${formData.firstName} ${formData.lastName}`,
-        spp_email: formData.email,
-        spp_number: formData.phone,
-        spp_address: formData.address,
-        spp_city: formData.city,
-        spp_state: formData.state,
-        spp_pin: formData.pincode,
-      } as any,
-      subtotal,
-      shipping,
-      total,
-    };
+    try {
+      const newOrderId = `ODR${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+      setOrderId(newOrderId);
+      
+      const customerRes = await fetch(`/api/customers?phone=${encodeURIComponent(formData.phone)}`);
+      const customerData = await customerRes.json();
+      let customerId = customerData.data?.nu_id;
+      
+      if (!customerId) {
+        const createCustomerRes = await fetch("/api/customers", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: `${formData.firstName} ${formData.lastName}`.trim(),
+            email: formData.email,
+            phone: formData.phone,
+            address: formData.address,
+          }),
+        });
+        const createCustomerData = await createCustomerRes.json();
+        customerId = createCustomerData.data?.id;
+      }
+      
+      const shippingRes = await fetch("/api/shipping", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${formData.firstName} ${formData.lastName}`.trim(),
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          pincode: formData.pincode,
+        }),
+      });
+      const shippingData = await shippingRes.json();
+      
+      const orderRes = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: customerId,
+          items: items,
+          shipping_address: shippingData.data || {},
+          payment_method: "whatsapp",
+          subtotal,
+          shipping_charges: shipping,
+          discount: 0,
+          total,
+        }),
+      });
+      const orderData = await orderRes.json();
+      
+      if (!orderData.success) {
+        throw new Error("Failed to create order");
+      }
+      
+      const invoiceData = {
+        orderId: newOrderId,
+        orderUid: orderData.data?.order_uid || newOrderId,
+        date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }),
+        items: items,
+        shippingDetails: {
+          spp_name: `${formData.firstName} ${formData.lastName}`,
+          spp_email: formData.email,
+          spp_number: formData.phone,
+          spp_address: formData.address,
+          spp_city: formData.city,
+          spp_state: formData.state,
+          spp_pin: formData.pincode,
+        } as any,
+        subtotal,
+        shipping,
+        total,
+      };
 
-    const pdf = generateInvoicePDF(invoiceData);
-    const pdfBlob = pdf.output("blob");
-    const pdfBase64 = await new Promise<string>((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.readAsDataURL(pdfBlob);
-    });
+      const pdf = generateInvoicePDF(invoiceData);
+      const pdfBlob = pdf.output("blob");
+      const pdfBase64 = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(pdfBlob);
+      });
 
-    const whatsappUrl = generateWhatsAppMessage(invoiceData, pdfBase64);
-    
-    window.open(whatsappUrl, "_blank");
-    
-    clearCart();
-    setOrderPlaced(true);
-    setLoading(false);
+      const orderLink = `${window.location.origin}/order/${orderData.data?.order_uid || newOrderId}`;
+      const whatsappUrl = generateWhatsAppMessage(invoiceData, pdfBase64, orderLink);
+      
+      window.open(whatsappUrl, "_blank");
+      
+      clearCart();
+      setOrderPlaced(true);
+    } catch (error) {
+      console.error("Order placement error:", error);
+      alert("Failed to place order. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (items.length === 0 && !orderPlaced) {

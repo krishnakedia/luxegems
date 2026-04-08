@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
-import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 interface AdminUser {
   a_id: number;
@@ -8,6 +8,10 @@ interface AdminUser {
   a_email: string;
   a_password: string;
   a_role: string;
+}
+
+function md5(text: string): string {
+  return crypto.createHash("md5").update(text).digest("hex");
 }
 
 export async function POST(request: Request) {
@@ -34,11 +38,17 @@ export async function POST(request: Request) {
     }
 
     const user = users[0];
-    const isValidPassword = await bcrypt.compare(password, user.a_password);
+    
+    let isValidPassword = false;
+    if (user.a_password.startsWith('$2')) {
+      isValidPassword = password === user.a_password;
+    } else {
+      isValidPassword = md5(password) === user.a_password || password === user.a_password;
+    }
 
-    if (password != user.a_password) {
+    if (!isValidPassword) {
       return NextResponse.json(
-        { success: false, error: "Invalid email or password"+isValidPassword },
+        { success: false, error: "Invalid email or password" },
         { status: 401 }
       );
     }

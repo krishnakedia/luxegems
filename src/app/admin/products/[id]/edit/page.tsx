@@ -18,18 +18,24 @@ import { Input, Textarea, Select } from "@/components/ui/input";
 import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/types";
 
-export default function EditProductPage({ params }: { params: { id: string } }) {
+export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [categories, setCategories] = useState<{ value: string; label: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
+  const [resolvedParams, setResolvedParams] = useState<{ id: string }>({ id: "" });
 
   useEffect(() => {
+    params.then((p) => setResolvedParams(p));
+  }, [params]);
+
+  useEffect(() => {
+    if (!resolvedParams.id) return;
     async function fetchData() {
       try {
         const [productRes, categoriesRes] = await Promise.all([
-          fetch(`/api/products/${params.id}`),
+          fetch(`/api/products/${resolvedParams.id}`),
           fetch("/api/categories"),
         ]);
         const productJson = await productRes.json();
@@ -54,13 +60,13 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       }
     }
     fetchData();
-  }, [params.id]);
+  }, [resolvedParams.id]);
 
   const handleSave = async () => {
     if (!product) return;
     setLoading(true);
     try {
-      await fetch(`/api/products/${params.id}`, {
+      await fetch(`/api/products/${resolvedParams.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(product),
@@ -100,11 +106,11 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
           </Link>
           <div>
             <h1 className="text-2xl font-light text-stone-900">Edit Product</h1>
-            <p className="text-stone-500">Product ID: #{params.id}</p>
+            <p className="text-stone-500">Product ID: #{resolvedParams.id}</p>
           </div>
         </div>
         <div className="flex gap-3">
-          <Link href={`/products/${params.id}`}>
+          <Link href={`/products/${resolvedParams.id}`}>
             <Button variant="outline">View Product</Button>
           </Link>
           <Button variant="gold" onClick={handleSave} disabled={loading}>

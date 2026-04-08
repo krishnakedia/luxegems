@@ -212,11 +212,11 @@ export default function AdminProductsPage() {
                   <td className="px-4 py-4">
                     <div>
                       <span className="font-medium text-stone-900">
-                        ₹{formatPrice(discountedPrice)}
+                        {formatPrice(discountedPrice)}
                       </span>
                       {discount > 0 && (
                         <span className="ml-2 text-xs text-stone-500 line-through">
-                          ₹{formatPrice(price)}
+                          {formatPrice(price)}
                         </span>
                       )}
                     </div>

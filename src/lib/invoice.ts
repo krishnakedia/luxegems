@@ -120,10 +120,10 @@ export function generateInvoicePDF(data: InvoiceData): jsPDF {
   return doc;
 }
 
-export function generateWhatsAppMessage(data: InvoiceData, pdfBase64: string): string {
+export function generateWhatsAppMessage(data: InvoiceData, pdfBase64: string, orderLink?: string): string {
   const phoneNumber = "919876543210";
   
-  const message = `*New Order - LUXEGEMS*%0A%0A` +
+  let message = `*New Order - LUXEGEMS*%0A%0A` +
     `Order ID: ${data.orderId}%0A` +
     `Date: ${data.date}%0A%0A` +
     `*Customer Details:*%0A` +
@@ -137,8 +137,13 @@ export function generateWhatsAppMessage(data: InvoiceData, pdfBase64: string): s
     ).join("%0A") + `%0A%0A` +
     `*Subtotal:* ${formatPrice(data.subtotal)}%0A` +
     `*Shipping:* ${data.shipping === 0 ? "FREE" : formatPrice(data.shipping)}%0A` +
-    `*Total:* ${formatPrice(data.total)}%0A%0A` +
-    `Please find the invoice attached.`;
+    `*Total:* ${formatPrice(data.total)}%0A%0A`;
+  
+  if (orderLink) {
+    message += `🔗 Track your order: ${orderLink}%0A%0A`;
+  }
+  
+  message += `Please find the invoice attached.`;
   
   return `https://wa.me/${phoneNumber}?text=${message}`;
 }

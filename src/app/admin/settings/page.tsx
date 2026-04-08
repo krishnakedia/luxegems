@@ -1,15 +1,110 @@
 "use client";
 
-import { useState } from "react";
-import { Save, Store, Truck, CreditCard, Bell, Shield } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Save, Store, Truck, CreditCard, Bell, Shield, Globe, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 
+interface SettingsData {
+  store_name: string;
+  store_email: string;
+  store_phone: string;
+  store_phone_2: string;
+  store_address: string;
+  gst_number: string;
+  free_shipping_above: string;
+  default_shipping_charge: string;
+  express_shipping_charge: string;
+  delivery_days: string;
+  cod_enabled: boolean;
+  upi_enabled: boolean;
+  cards_enabled: boolean;
+  order_email_enabled: boolean;
+  order_status_enabled: boolean;
+  low_stock_alert: boolean;
+  social_facebook: string;
+  social_instagram: string;
+  social_twitter: string;
+  social_youtube: string;
+  social_linkedin: string;
+}
+
 export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState("general");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [settings, setSettings] = useState<SettingsData>({
+    store_name: "LUXEGEMS",
+    store_email: "kediakrishna65@gmail.com",
+    store_phone: "7003813603",
+    store_phone_2: "8961941902",
+    store_address: "123 Jewelry Lane, Karol Bagh, New Delhi - 110005",
+    gst_number: "07AABCU9603R1ZM",
+    free_shipping_above: "999",
+    default_shipping_charge: "99",
+    express_shipping_charge: "199",
+    delivery_days: "3-7 business days",
+    cod_enabled: true,
+    upi_enabled: true,
+    cards_enabled: true,
+    order_email_enabled: true,
+    order_status_enabled: true,
+    low_stock_alert: true,
+    social_facebook: "",
+    social_instagram: "",
+    social_twitter: "",
+    social_youtube: "",
+    social_linkedin: "",
+  });
+
+  useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const res = await fetch("/api/settings");
+        const data = await res.json();
+        if (data.success && data.data) {
+          setSettings((prev) => ({ ...prev, ...data.data }));
+        }
+      } catch (err) {
+        console.error("Failed to fetch settings:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchSettings();
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings),
+      });
+    } catch (err) {
+      console.error("Failed to save settings:", err);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const updateSetting = (key: keyof SettingsData, value: any) => {
+    setSettings((prev) => ({ ...prev, [key]: value }));
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[400px]">
+        <div className="text-stone-500">Loading settings...</div>
+      </div>
+    );
+  }
 
   const tabs = [
     { key: "general", label: "General", icon: Store },
+    { key: "contact", label: "Contact Info", icon: Globe },
+    { key: "social", label: "Social Media", icon: Link2 },
     { key: "shipping", label: "Shipping", icon: Truck },
     { key: "payment", label: "Payment", icon: CreditCard },
     { key: "notifications", label: "Notifications", icon: Bell },
@@ -24,9 +119,9 @@ export default function AdminSettingsPage() {
           <h1 className="text-2xl font-light text-stone-900">Settings</h1>
           <p className="text-stone-500">Manage your store settings</p>
         </div>
-        <Button variant="gold" className="gap-2">
+        <Button variant="gold" className="gap-2" onClick={handleSave} disabled={saving}>
           <Save className="h-4 w-4" />
-          Save Changes
+          {saving ? "Saving..." : "Save Changes"}
         </Button>
       </div>
 
@@ -57,11 +152,83 @@ export default function AdminSettingsPage() {
             <div className="bg-white p-6 border border-stone-200">
               <h2 className="text-lg font-medium text-stone-900 mb-6">General Settings</h2>
               <div className="space-y-6">
-                <Input label="Store Name" defaultValue="LUXEGEMS" />
-                <Input label="Store Email" type="email" defaultValue="support@luxegems.in" />
-                <Input label="Store Phone" defaultValue="+91 98765 43210" />
-                <Textarea label="Store Address" defaultValue="123 Jewelry Lane, Karol Bagh, New Delhi - 110005" />
-                <Input label="GST Number" defaultValue="07AABCU9603R1ZM" />
+                <Input 
+                  label="Store Name" 
+                  value={settings.store_name} 
+                  onChange={(e) => updateSetting("store_name", e.target.value)} 
+                />
+                <Input 
+                  label="GST Number" 
+                  value={settings.gst_number} 
+                  onChange={(e) => updateSetting("gst_number", e.target.value)} 
+                />
+              </div>
+            </div>
+          )}
+
+          {activeTab === "contact" && (
+            <div className="bg-white p-6 border border-stone-200">
+              <h2 className="text-lg font-medium text-stone-900 mb-6">Contact Information</h2>
+              <div className="space-y-6">
+                <Input 
+                  label="Primary Phone" 
+                  value={settings.store_phone} 
+                  onChange={(e) => updateSetting("store_phone", e.target.value)} 
+                />
+                <Input 
+                  label="Secondary Phone" 
+                  value={settings.store_phone_2} 
+                  onChange={(e) => updateSetting("store_phone_2", e.target.value)} 
+                />
+                <Input 
+                  label="Email Address" 
+                  type="email" 
+                  value={settings.store_email} 
+                  onChange={(e) => updateSetting("store_email", e.target.value)} 
+                />
+                <Textarea 
+                  label="Store Address" 
+                  value={settings.store_address} 
+                  onChange={(e) => updateSetting("store_address", e.target.value)} 
+                />
+              </div>
+            </div>
+          )}
+
+          {activeTab === "social" && (
+            <div className="bg-white p-6 border border-stone-200">
+              <h2 className="text-lg font-medium text-stone-900 mb-6">Social Media Links</h2>
+              <div className="space-y-6">
+                <Input 
+                  label="Facebook" 
+                  placeholder="https://facebook.com/yourpage"
+                  value={settings.social_facebook} 
+                  onChange={(e) => updateSetting("social_facebook", e.target.value)} 
+                />
+                <Input 
+                  label="Instagram" 
+                  placeholder="https://instagram.com/yourpage"
+                  value={settings.social_instagram} 
+                  onChange={(e) => updateSetting("social_instagram", e.target.value)} 
+                />
+                <Input 
+                  label="Twitter/X" 
+                  placeholder="https://twitter.com/yourpage"
+                  value={settings.social_twitter} 
+                  onChange={(e) => updateSetting("social_twitter", e.target.value)} 
+                />
+                <Input 
+                  label="YouTube" 
+                  placeholder="https://youtube.com/yourchannel"
+                  value={settings.social_youtube} 
+                  onChange={(e) => updateSetting("social_youtube", e.target.value)} 
+                />
+                <Input 
+                  label="LinkedIn" 
+                  placeholder="https://linkedin.com/company/yourcompany"
+                  value={settings.social_linkedin} 
+                  onChange={(e) => updateSetting("social_linkedin", e.target.value)} 
+                />
               </div>
             </div>
           )}

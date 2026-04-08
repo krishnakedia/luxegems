@@ -34,8 +34,9 @@ const collections = {
   },
 };
 
-export default function CollectionPage({ params }: { params: { collection: string } }) {
-  const collection = collections[params.collection as keyof typeof collections] || collections.wedding;
+export default function CollectionPage({ params }: { params: Promise<{ collection: string }> }) {
+  const resolvedParams = React.use(params);
+  const collection = collections[resolvedParams.collection as keyof typeof collections] || collections.wedding;
   const [products, setProducts] = React.useState<Product[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [viewMode, setViewMode] = React.useState<"grid" | "list">("grid");

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import QRCode from "qrcode";
 import {
   ArrowLeft,
   Printer,
@@ -17,6 +18,7 @@ import {
   XCircle,
   CreditCard,
   Banknote,
+  Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -59,6 +61,7 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
   const [orderStatus, setOrderStatus] = useState("1");
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
+  const [qrCodeUrl, setQrCodeUrl] = useState("");
 
   useEffect(() => {
     async function fetchOrder() {
@@ -68,6 +71,13 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
         if (json.success && json.data) {
           setOrder(json.data);
           setOrderStatus(json.data.order_status);
+          
+          const reviewUrl = `${window.location.origin}/review?order=${json.data.order_uid}`;
+          const qrDataUrl = await QRCode.toDataURL(reviewUrl, {
+            width: 150,
+            margin: 1,
+          });
+          setQrCodeUrl(qrDataUrl);
         }
       } catch (error) {
         console.error("Failed to fetch order:", error);
@@ -286,6 +296,27 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
               </div>
             </div>
           </div>
+
+          {qrCodeUrl && (
+            <div className="bg-white border border-stone-200 p-6">
+              <h2 className="text-lg font-medium text-stone-900 mb-4 flex items-center gap-2">
+                <Star className="h-5 w-5 text-amber-500" />
+                Add Review
+              </h2>
+              <p className="text-sm text-stone-500 mb-4">
+                Scan this QR code to leave a review for your order
+              </p>
+              <div className="flex justify-center">
+                <img src={qrCodeUrl} alt="Review QR Code" className="border-2 border-amber-200 rounded-lg" />
+              </div>
+              <Link
+                href={`/review?order=${order.order_uid}`}
+                className="block text-center text-sm text-amber-600 hover:underline mt-3"
+              >
+                Or click here to add review
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

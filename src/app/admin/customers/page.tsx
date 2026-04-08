@@ -10,23 +10,53 @@ export default function CustomersPage() {
   const [search, setSearch] = React.useState("");
   const [customers, setCustomers] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const [showAddModal, setShowAddModal] = React.useState(false);
+  const [adding, setAdding] = React.useState(false);
+  const [newCustomer, setNewCustomer] = React.useState({ name: "", email: "", phone: "" });
+  const [error, setError] = React.useState("");
 
   React.useEffect(() => {
-    async function fetchCustomers() {
-      try {
-        const res = await fetch("/api/customers");
-        const data = await res.json();
-        if (data.success) {
-          setCustomers(data.data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch customers:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
     fetchCustomers();
   }, []);
+
+  const fetchCustomers = async () => {
+    try {
+      const res = await fetch("/api/customers");
+      const data = await res.json();
+      if (data.success) {
+        setCustomers(data.data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch customers:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddCustomer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAdding(true);
+    setError("");
+    try {
+      const res = await fetch("/api/customers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newCustomer),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setShowAddModal(false);
+        setNewCustomer({ name: "", email: "", phone: "" });
+        fetchCustomers();
+      } else {
+        setError(data.error || "Failed to add customer");
+      }
+    } catch (err) {
+      setError("Failed to add customer");
+    } finally {
+      setAdding(false);
+    }
+  };
 
   const filteredCustomers = customers.filter(cust =>
     cust.nu_name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -48,11 +78,49 @@ export default function CustomersPage() {
           <h1 className="text-2xl font-light text-stone-900">Customers</h1>
           <p className="text-stone-500 mt-1">Manage your customers</p>
         </div>
-        <Button variant="gold">
+        <Button variant="gold" onClick={() => setShowAddModal(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Add Customer
         </Button>
       </div>
+
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h2 className="text-xl font-medium mb-4">Add New Customer</h2>
+            {error && <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded">{error}</div>}
+            <form onSubmit={handleAddCustomer} className="space-y-4">
+              <Input
+                label="Full Name"
+                value={newCustomer.name}
+                onChange={(e) => setNewCustomer({ ...newCustomer, name: e.target.value })}
+                required
+              />
+              <Input
+                label="Email"
+                type="email"
+                value={newCustomer.email}
+                onChange={(e) => setNewCustomer({ ...newCustomer, email: e.target.value })}
+                required
+              />
+              <Input
+                label="Phone"
+                value={newCustomer.phone}
+                onChange={(e) => setNewCustomer({ ...newCustomer, phone: e.target.value })}
+                required
+              />
+              <div className="flex gap-3 pt-2">
+                <Button type="button" variant="outline" onClick={() => setShowAddModal(false)} className="flex-1">
+                  Cancel
+                </Button>
+                <Button type="submit" variant="gold" disabled={adding} className="flex-1">
+                  {adding ? "Adding..." : "Add Customer"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <div className="bg-white border border-stone-200">
         <div className="p-4 border-b border-stone-200">
