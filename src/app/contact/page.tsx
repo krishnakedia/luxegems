@@ -1,7 +1,6 @@
 import { Metadata } from "next";
+import { ContactForm } from "./contact-form";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input, Textarea } from "@/components/ui/input";
 
 export const metadata: Metadata = {
   title: "Contact Us | LUXEGEMS",
@@ -11,7 +10,6 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="min-h-screen">
-      {/* Hero */}
       <section className="py-20 bg-stone-100">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-light text-stone-900 mb-4">
@@ -27,7 +25,6 @@ export default function ContactPage() {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Info */}
             <div>
               <h2 className="text-2xl font-light text-stone-900 mb-8">Get in Touch</h2>
               <div className="space-y-6">
@@ -85,41 +82,12 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Map Placeholder */}
               <div className="mt-8 aspect-video bg-stone-100 border border-stone-200 flex items-center justify-center">
                 <p className="text-stone-500">Map Location</p>
               </div>
             </div>
 
-            {/* Contact Form */}
-            <div className="bg-white p-8 border border-stone-200">
-              <h2 className="text-2xl font-light text-stone-900 mb-6">Send Us a Message</h2>
-              <form className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <Input label="First Name" placeholder="Enter first name" />
-                  <Input label="Last Name" placeholder="Enter last name" />
-                </div>
-                <Input label="Email Address" type="email" placeholder="Enter email" />
-                <Input label="Phone Number" type="tel" placeholder="Enter phone number" />
-                <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1.5">
-                    Subject
-                  </label>
-                  <select className="flex h-11 w-full border-2 border-stone-200 bg-white px-4 py-2 text-sm text-stone-900 focus:border-amber-600 focus:outline-none">
-                    <option value="">Select a subject</option>
-                    <option value="order">Order Inquiry</option>
-                    <option value="product">Product Question</option>
-                    <option value="return">Return/Exchange</option>
-                    <option value="feedback">Feedback</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-                <Textarea label="Message" placeholder="How can we help you?" />
-                <Button variant="gold" size="lg" className="w-full">
-                  Send Message
-                </Button>
-              </form>
-            </div>
+            <ContactForm />
           </div>
         </div>
       </section>

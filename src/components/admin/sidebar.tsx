@@ -89,6 +89,11 @@ const adminNav = [
     icon: MessageSquare,
   },
   {
+    title: "Contact Messages",
+    href: "/admin/contact-messages",
+    icon: MessageSquare,
+  },
+  {
     title: "Reports",
     href: "/admin/reports",
     icon: BarChart3,

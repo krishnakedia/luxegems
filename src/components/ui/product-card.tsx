@@ -8,6 +8,7 @@ import { cn, formatPrice } from "@/lib/utils";
 import { Badge } from "./badge";
 import { Button } from "./button";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 import type { Product } from "@/types";
 
 interface ProductCardProps {
@@ -22,8 +23,13 @@ export function ProductCard({
   className,
 }: ProductCardProps) {
   const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [isWishlisted, setIsWishlisted] = React.useState(false);
   const [isHovered, setIsHovered] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsWishlisted(isInWishlist(product.p_id));
+  }, [isInWishlist, product.p_id]);
 
   const originalPrice = parseFloat(product.p_price);
   const discount = parseFloat(product.p_discount);
@@ -237,6 +243,11 @@ export function ProductCard({
         <button
           onClick={(e) => {
             e.preventDefault();
+            if (isWishlisted) {
+              removeFromWishlist(product.p_id);
+            } else {
+              addToWishlist(product);
+            }
             setIsWishlisted(!isWishlisted);
           }}
           className={cn(

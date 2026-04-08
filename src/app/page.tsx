@@ -4,6 +4,7 @@ import { ArrowRight, Sparkles, Shield, Truck, RefreshCw, Gem } from "lucide-reac
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProductCard } from "@/components/ui/product-card";
+import { TestimonialsSection } from "@/components/ui/testimonials";
 import { query } from "@/lib/db";
 import type { Product, Category } from "@/types";
 
@@ -52,30 +53,6 @@ async function getCategories() {
   }
 }
 
-async function getTestimonials() {
-  try {
-    const reviews = await query<any[]>(`
-      SELECT r.re_id, r.re_name, r.re_desc
-      FROM review r
-      WHERE r.re_status = '1'
-      ORDER BY r.re_id DESC
-      LIMIT 6
-    `);
-    
-    return reviews.map(r => ({
-      id: r.re_id,
-      name: r.re_name,
-      location: "Customer",
-      text: r.re_desc,
-      rating: 5,
-      avatar: r.re_name.charAt(0),
-    }));
-  } catch (error) {
-    console.error("Error fetching testimonials:", error);
-    return [];
-  }
-}
-
 async function getSliders() {
   try {
     const sliders = await query<any[]>(`
@@ -89,10 +66,9 @@ async function getSliders() {
 }
 
 export default async function HomePage() {
-  const [products, categories, testimonials, sliders] = await Promise.all([
+  const [products, categories, sliders] = await Promise.all([
     getProducts(8),
     getCategories(),
-    getTestimonials(),
     getSliders()
   ]);
 
@@ -342,40 +318,7 @@ export default async function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <span className="text-amber-600 text-sm uppercase tracking-widest mb-2 block">
-              What Our Customers Say
-            </span>
-            <h2 className="text-3xl md:text-4xl font-light text-stone-900">
-              Loved by Thousands
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial) => (
-              <div
-                key={testimonial.id}
-                className="bg-white border border-stone-200 p-8 text-center"
-              >
-                <div className="w-16 h-16 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center">
-                  <span className="text-xl font-medium text-amber-700">
-                    {testimonial.avatar}
-                  </span>
-                </div>
-                <div className="flex justify-center gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Sparkles key={i} className="h-4 w-4 text-amber-500 fill-current" />
-                  ))}
-                </div>
-                <p className="text-stone-600 mb-4 italic">"{testimonial.text}"</p>
-                <h4 className="font-medium text-stone-900">{testimonial.name}</h4>
-                <p className="text-sm text-stone-500">{testimonial.location}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <TestimonialsSection />
 
       {/* Newsletter */}
       <section className="py-20 bg-gradient-to-r from-amber-600 to-yellow-500">

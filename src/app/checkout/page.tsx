@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
 import { useCart } from "@/lib/cart-context";
 import { formatPrice } from "@/lib/utils";
+import { indianStates } from "@/lib/states";
 import { generateInvoicePDF, generateWhatsAppMessage } from "@/lib/invoice";
 
 export default function CheckoutPage() {
@@ -273,12 +274,7 @@ export default function CheckoutPage() {
                   onChange={handleInputChange}
                   options={[
                     { value: "", label: "Select State" },
-                    { value: "delhi", label: "Delhi" },
-                    { value: "maharashtra", label: "Maharashtra" },
-                    { value: "karnataka", label: "Karnataka" },
-                    { value: "tamilnadu", label: "Tamil Nadu" },
-                    { value: "gujarat", label: "Gujarat" },
-                    { value: "rajasthan", label: "Rajasthan" },
+                    ...indianStates
                   ]}
                 />
                 <Input
