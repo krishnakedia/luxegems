@@ -1,6 +1,14 @@
-add to cart or wihlist is not working, 
-blog details is not working
-backend is not working 
-there should be admin login first and after auth user can access admin.
-user header and footer should not be in admin.
-there is not backend interaction between db and backend
+index page logic are not working properly means when i click on add to create it don't show item is added and in header also it doesn't show no of product added to cart or wishlist.
+added to cart should be fixed and it should show how many product are added to cart.
+A param property was accessed directly with `params.collection`. `params` is a Promise and must be unwrapped with `React.use()` before accessing its properties.
+in admin section there should be only admin header and footer not ecommerce header or footer.
+and number should be 7003813603 or 8961941902 and in email kediakrishna65@gmail.com and there should be many social media option which can be added or modify by admin.
+there is admin login issue and in admin table a_password should be md5 increpted and there should be a auto trim and double space correction.
+unable to login
+order is not saved in admin
+there is 2 rs symbol in product page in admin
+edit page not found
+add customer is not working
+many pages in admin not working
+order details page should contain a qr code to add review to the product 
+admin is not working properly

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,40 +18,76 @@ import { Input, Textarea, Select } from "@/components/ui/input";
 import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/types";
 
-const mockProduct: Product = {
-  p_id: 1,
-  p_slid: "Admin",
-  p_catid: "82",
-  p_scatid: "",
-  p_scname: "",
-  p_name: "Elegant Gold-Plated Necklace Set",
-  p_code: "SH-1001",
-  p_price: "1256",
-  p_discount: "10",
-  p_weight: 0,
-  p_description: "Exquisite gold-plated necklace set perfect for weddings and special occasions. Features intricate design with high-quality finish.",
-  p_date: "2026-02-05",
-  p_status: 1,
-  category_name: "Necklaces",
-  stock: 15,
-  images: [
-    { pm_id: 1, pm_pid: "1", pm_image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600", pm_status: "1" },
-    { pm_id: 2, pm_pid: "1", pm_image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600", pm_status: "1" },
-  ],
-};
-
 export default function EditProductPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const [product, setProduct] = useState(mockProduct);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [categories, setCategories] = useState<{ value: string; label: string }[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [productRes, categoriesRes] = await Promise.all([
+          fetch(`/api/products/${params.id}`),
+          fetch("/api/categories"),
+        ]);
+        const productJson = await productRes.json();
+        const categoriesJson = await categoriesRes.json();
+
+        if (productJson.success && productJson.data) {
+          setProduct(productJson.data);
+        }
+
+        if (categoriesJson.success && categoriesJson.data) {
+          setCategories(
+            categoriesJson.data.map((c: any) => ({
+              value: c.cat_id.toString(),
+              label: c.cat_name,
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      } finally {
+        setLoadingData(false);
+      }
+    }
+    fetchData();
+  }, [params.id]);
 
   const handleSave = async () => {
+    if (!product) return;
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await fetch(`/api/products/${params.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(product),
+      });
       router.push("/admin/products");
-    }, 1000);
+    } catch (error) {
+      console.error("Failed to save:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (loadingData) {
+    return (
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[400px]">
+        <div className="text-stone-500">Loading product...</div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[400px]">
+        <div className="text-stone-500">Product not found</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 lg:p-8">
@@ -99,14 +135,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                 <Select
                   label="Category"
                   value={product.p_catid}
-                  options={[
-                    { value: "82", label: "Necklaces" },
-                    { value: "83", label: "Altar Sets" },
-                    { value: "84", label: "Earrings" },
-                    { value: "85", label: "Rings" },
-                    { value: "86", label: "Bracelets" },
-                    { value: "87", label: "Baptismal" },
-                  ]}
+                  options={categories}
                 />
               </div>
               <Textarea
@@ -195,6 +224,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
             <h2 className="text-lg font-medium text-stone-900 mb-4">Status</h2>
             <Select
               value={product.p_status?.toString() || "1"}
+              onChange={(e) => setProduct({ ...product, p_status: parseInt(e.target.value) })}
               options={[
                 { value: "1", label: "Active" },
                 { value: "0", label: "Inactive" },

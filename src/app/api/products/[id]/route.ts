@@ -61,3 +61,48 @@ export async function GET(
     );
   }
 }
+
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const body = await request.json();
+    const {
+      p_name,
+      p_code,
+      p_catid,
+      p_description,
+      p_price,
+      p_discount,
+      p_weight,
+      p_status,
+    } = body;
+
+    await query(`
+      UPDATE product SET
+        p_name = ?, p_code = ?, p_catid = ?, p_description = ?,
+        p_price = ?, p_discount = ?, p_weight = ?, p_status = ?
+      WHERE p_id = ?
+    `, [
+      p_name,
+      p_code,
+      p_catid,
+      p_description,
+      p_price,
+      p_discount,
+      p_weight,
+      p_status,
+      id,
+    ]);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Product update error:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to update product" },
+      { status: 500 }
+    );
+  }
+}
