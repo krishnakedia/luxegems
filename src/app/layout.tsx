@@ -5,6 +5,8 @@ import { Navigation } from "@/components/ui/navigation";
 import { Footer } from "@/components/ui/footer";
 import { CartProvider } from "@/lib/cart-context";
 import { WishlistProvider } from "@/lib/wishlist-context";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -88,6 +90,7 @@ export default function RootLayout({
             <Footer />
           </WishlistProvider>
         </CartProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
