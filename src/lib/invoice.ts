@@ -115,13 +115,13 @@ export function generateInvoicePDF(data: InvoiceData): jsPDF {
   doc.setFont("helvetica", "normal");
   doc.text("Thank you for shopping with LUXEGEMS!", pageWidth / 2, 280, { align: "center" });
   doc.setFontSize(8);
-  doc.text("123 Jewelry Lane, Karol Bagh, New Delhi - 110005 | support@luxegems.in | +91 98765 43210", pageWidth / 2, 286, { align: "center" });
+  doc.text("147, A/14, Girish Ghosh Road Belur Howrah-711202 | kediakrishna65@gmail.com | +91 8961941902", pageWidth / 2, 286, { align: "center" });
   
   return doc;
 }
 
 export function generateWhatsAppMessage(data: InvoiceData, pdfBase64: string, orderLink?: string): string {
-  const phoneNumber = "919876543210";
+  const phoneNumber = "918961941902";
   
   let message = `*New Order - LUXEGEMS*%0A%0A` +
     `Order ID: ${data.orderId}%0A` +

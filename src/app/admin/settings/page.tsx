@@ -38,7 +38,7 @@ export default function AdminSettingsPage() {
     store_email: "kediakrishna65@gmail.com",
     store_phone: "7003813603",
     store_phone_2: "8961941902",
-    store_address: "123 Jewelry Lane, Karol Bagh, New Delhi - 110005",
+    store_address: "147, A/14, Girish Ghosh Road Belur Howrah-711202",
     gst_number: "07AABCU9603R1ZM",
     free_shipping_above: "999",
     default_shipping_charge: "99",

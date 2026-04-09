@@ -58,7 +58,7 @@ export default function ReturnsPage() {
             <h2 className="text-2xl font-medium text-stone-900 mb-4">Contact Us</h2>
             <p className="text-stone-600 leading-relaxed">
               For any queries related to returns and refunds, please contact us at 
-              returns@luxegems.in or call +91 98765 43210.
+              returns@luxegems.in or call +91 8961941902.
             </p>
           </section>
         </div>

@@ -68,7 +68,7 @@ async function getFaqs() {
       {
         id: 110,
         question: "How can I contact customer support?",
-        answer: "You can reach us at support@luxegems.in, call +91 98765 43210, or message us on WhatsApp."
+        answer: "You can reach us at kediakrishna65@gmail.com, call +91 8961941902, or message us on WhatsApp."
       }
     ];
 

@@ -118,7 +118,7 @@ export default function TermsConditionsPage() {
               <p className="text-stone-700">
                 <strong>LUXEGEMS</strong><br />
                 Email: legal@luxegems.in<br />
-                Phone: +91 98765 43210
+                Phone: +91 8961941902
               </p>
             </div>
           </section>

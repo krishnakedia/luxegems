@@ -102,8 +102,8 @@ export default function PrivacyPolicyPage() {
             <p className="text-stone-700">
               <strong>LUXEGEMS</strong><br />
               Email: privacy@luxegems.in<br />
-              Phone: +91 98765 43210<br />
-              Address: 123 Jewelry Lane, Karol Bagh, New Delhi - 110005
+              Phone: +91 8961941902<br />
+              Address: 147, A/14, Girish Ghosh Road Belur Howrah-711202
             </p>
           </div>
         </section>

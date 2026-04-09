@@ -204,7 +204,7 @@ export default function OrderPage({ params }: { params: Promise<{ uid: string }>
 
           <div className="mt-8 text-center">
             <a
-              href="https://wa.me/919876543210"
+              href="https://wa.me/918961941902"
               className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-full font-medium transition-all hover:scale-105"
             >
               <Phone className="h-5 w-5" />

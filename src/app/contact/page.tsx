@@ -35,8 +35,8 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-medium text-stone-900 mb-1">Visit Our Store</h3>
                     <p className="text-stone-600">
-                      123 Jewelry Lane, Karol Bagh<br />
-                      New Delhi - 110005<br />
+                      147, A/14, Girish Ghosh Road<br /> 
+                      Belur Howrah-711202<br />
                       India
                     </p>
                   </div>
@@ -49,8 +49,8 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-medium text-stone-900 mb-1">Call Us</h3>
                     <p className="text-stone-600">
-                      +91 98765 43210<br />
-                      +91 11 2345 6789
+                      +91 8961941902<br />
+                      +91 7003813603
                     </p>
                   </div>
                 </div>
@@ -62,8 +62,8 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-medium text-stone-900 mb-1">Email Us</h3>
                     <p className="text-stone-600">
-                      support@luxegems.in<br />
-                      sales@luxegems.in
+                      kediakrishna65@gmail.com<br />
+                      pritykedi1@gmail.com
                     </p>
                   </div>
                 </div>

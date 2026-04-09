@@ -126,16 +126,16 @@ export function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
                 <span className="text-sm text-stone-400">
-                  123 Jewelry Lane, Karol Bagh, New Delhi - 110005
+                  147, A/14, Girish Ghosh Road Belur Howrah-711202
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-amber-500 flex-shrink-0" />
-                <span className="text-sm text-stone-400">+91 98765 43210</span>
+                <span className="text-sm text-stone-400">+91 8961941902</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-amber-500 flex-shrink-0" />
-                <span className="text-sm text-stone-400">support@luxegems.in</span>
+                <span className="text-sm text-stone-400">kediakrishna65@gmail.com</span>
               </li>
             </ul>
           </div>

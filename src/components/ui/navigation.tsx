@@ -198,12 +198,12 @@ export function Navigation() {
                 </Badge>
               )}
             </Link>
-            <Link
+            {/* <Link
               href="/account"
               className="p-2.5 text-stone-700 hover:text-amber-700 transition-colors"
             >
               <User className="h-5 w-5" />
-            </Link>
+            </Link> */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="lg:hidden p-2.5 text-stone-700"
