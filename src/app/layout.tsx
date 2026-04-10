@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
-import { Navigation } from "@/components/ui/navigation";
-import { Footer } from "@/components/ui/footer";
+import { LayoutWrapper } from "@/components/ui/layout-wrapper";
 import { CartProvider } from "@/lib/cart-context";
 import { WishlistProvider } from "@/lib/wishlist-context";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -85,9 +84,7 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-white text-stone-900">
         <CartProvider>
           <WishlistProvider>
-            <Navigation />
-            <main className="flex-1">{children}</main>
-            <Footer />
+            <LayoutWrapper>{children}</LayoutWrapper>
           </WishlistProvider>
         </CartProvider>
         <SpeedInsights />
